@@ -1,0 +1,180 @@
+// CLASSES AND IDS
+body {
+  margin: 0;
+  font-family: 'Barlow', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  font-weight: 100;
+  // overflow-y: hidden;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+#App {
+  width: 100vw;
+  height: 200vh;
+}
+#Upper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: black;
+  animation: changeCol 1s reverse;
+
+  header {
+    width: 100%;
+    height: 10%;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  }
+  button {
+    background-color: red;
+    height: 20%;
+  }
+}
+.Navbar {
+  width: 100%;
+  height: 15%;
+  display: flex;
+  position: absolute;
+  top: 85%;
+  overflow: hidden;
+  
+  .Nappi {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-style: italic;
+    transition: all 0.2s;
+    z-index: 1;
+  
+    p {
+      transition: all 0.2s;
+    }
+    div {
+      // display: flex;
+      width: calc(100%/3);
+      height: 100%;
+      position: absolute;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.3) 10%, rgba(255, 255, 255, 0) 100%);
+      background-color: rgba(255, 255, 255, 0);
+      transform: rotateX(180deg);
+      opacity: 0;
+      transition: all 0.2s;
+    }
+  }
+  // .Active {
+  //   opacity: 1;
+  // }
+  .Nappi:hover {
+    cursor: pointer;
+  
+    p {
+      transform: translateY(-2vh);
+    }
+    div {
+      opacity: 1;
+    }
+  }
+}
+.Navbar-enter {
+  top: 85%;
+}
+.Navbar-enter-active {
+  height: 10%;
+  top: 100%;
+  transition: all 1s;
+
+  .Nappi {
+    div {
+      transform: rotateX(88deg);
+      transform-origin: 50% 100%;
+      transform: translateY(-95%);
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    .Active {
+      opacity: 1;
+    }
+  }
+}
+.Navbar-enter-done {
+  height: 10%;
+  top: 100%;
+  transition: all 1s;
+
+  .Nappi {
+    div {
+      transform: rotateX(0deg);
+      transform: translateY(0%);
+    }
+    .Active {
+      opacity: 1;
+    }
+  }
+  .Nappi:hover {
+    p {
+      transform: translateY(2vh);
+    }
+  }
+}
+.Navbar-exit {
+  top: 100%;
+}
+.Navbar-exit-active {
+  top: 85%;
+  transition: all 1s;
+
+  .Nappi {
+    div {
+      transform: rotateX(-88deg);
+      transform-origin: 50% 0%;
+      transform: translateY(95%);
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    .Active {
+      opacity: 0;
+    }
+  }
+  .Nappi:hover {
+    div, .Active {
+      opacity: 0;
+    }
+  }
+}
+.Navbar-exit-done {
+  top: 85%;
+  transition: all 1s;
+
+  .Nappi:hover {
+    p {
+      transform: translateY(-2vh);
+    }
+    .Active {
+      opacity: 0;
+    }
+  }
+}
+#Lower {
+  width: 100%;
+  height: 100vh;
+  padding-top: 15vh;
+  box-sizing: border-box;
+  text-align: center;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+
+  div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+}
+.CategoryContainer {
+  flex: 1;
+}
