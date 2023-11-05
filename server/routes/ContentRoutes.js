@@ -1,10 +1,10 @@
 import express from "express";
 import {
-    getImages
-} from "../controllers/ImageController.js";
+    getContent
+} from "../controllers/ContentController.js";
 
 const router = express.Router();
  
-router.get('/:id', getImages);
+router.get('/', getContent);
  
 export default router;

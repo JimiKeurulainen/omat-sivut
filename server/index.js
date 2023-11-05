@@ -1,14 +1,15 @@
 import express from "express";
-import imageroutes from "./routes/ImageRoutes.js";
+import contentRoutes from "./routes/ContentRoutes.js";
 import https from "https";
+import http from "http";
 import cors from "cors";
 import fs from "fs";
 import busboy from "connect-busboy";
-import * as config from "./config.json";
 
-const privateKey  = fs.readFileSync(config.SSHKEY);
-const certificate = fs.readFileSync(config.SSHCERT);
-const credentials = {key: privateKey, cert: certificate};
+// const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+// const privateKey  = fs.readFileSync(config.SSHKEY);
+// const certificate = fs.readFileSync(config.SSHCERT);
+// const credentials = {key: privateKey, cert: certificate};
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(busboy({
     highWaterMark: 10 * 1024 * 1024, // Set 10MiB buffer
 })); // Insert the busboy middle-ware
 
-app.use('/images', imageroutes);
+app.use('/content', contentRoutes);
 
-// http.createServer(app).listen(5000, () => console.log('Server running at port 5000'));
-https.createServer(credentials, app).listen(5001, () => console.log('Server running at port 5001'));
+http.createServer(app).listen(5000, () => console.log('Server running at port 5000'));
+// https.createServer(credentials, app).listen(5001, () => console.log('Server running at port 5001'));

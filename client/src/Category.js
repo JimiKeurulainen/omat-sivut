@@ -17,7 +17,7 @@ function Category(props) {
     const tempArr = [];
     tempProjects.forEach(project => {
       tempArr.push(
-        <button>
+        <button key={`menu_${project}`}>
           <p>{project}</p>
           <div></div>
         </button>
@@ -27,7 +27,7 @@ function Category(props) {
   }, []);
 
   return (
-    <Element name={`category${props.index}`} key={`Category${props.index}`} className='CategoryContainer'>
+    <Element name={`category${props.index}`} className='CategoryContainer'>
       <div className='Category'>
         <div className='Menu'>
           <h3>Kategoriat</h3>
