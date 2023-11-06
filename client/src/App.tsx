@@ -1,31 +1,38 @@
 // import './App.css';
 import './App.scss';
-import { useEffect, useState, useRef, createRef } from 'react';
+import { useEffect, useState, useRef, Ref } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { Link, animateScroll as scroll } from "react-scroll";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Category from './Category';
 
+interface CategoryObj {
+  [key: string]: Array<string>
+}
 
 function App() {
   const navigateURL = useNavigate();
 
-  const [buttons, setButtons] = useState([]);
-  const [lowers, setLowers] = useState([]);
-  const categoryRefs = useRef([]);
+  const [buttons, setButtons] = useState(Array<JSX.Element>);
+  const [lowers, setLowers] = useState(Array<JSX.Element>);
+  const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
 
   const [activeElement, setActiveElement] = useState(0);
   const [pos, setPos] = useState(false);
-  const previousElement = useRef(null);
+  const previousElement = useRef<number>(0);
   const nodeRef = useRef(null);
 
   useEffect(() => {
     axios.get('http://localhost:5000/content').then(res => {
-      const tempBtns = [];
-      const tempLowers = [];
+      console.log('refs', res);
+
+      const tempBtns: Array<JSX.Element> = [];
+      const tempLowers: Array<JSX.Element> = [];
       
-      res.data.data.forEach((element, index) => {
+      res.data.data.forEach((element: CategoryObj, index: number) => {
+        index += 1;
+
         tempBtns.push(
           <Link
             className='Nappi'
@@ -38,18 +45,16 @@ function App() {
             duration={500}
             onClick={() => navigate(index, element)}
           >
-            <p>{element}</p>
-            <div ref={el => categoryRefs.current[index] = el} key={`nappiBG${index}`}></div>
+            <p>{handleString(element)}</p>
+            <div ref={(el: HTMLDivElement) => categoryRefs.current[index] = el} key={`nappiBG${index}`}></div>
           </Link>
         );
         tempLowers.push(
-          <Category index={index} element={element} key={`category${index}`}></Category>
+          <Category index={index} element={element} handleString={handleString} key={`category${index}`}></Category>
         );
       });
       setButtons(tempBtns);
       setLowers(tempLowers);
-      console.log('refs', categoryRefs);
-
     });
 
     // const href = window.location.href.split('/')[3];
@@ -63,9 +68,9 @@ function App() {
 
     if (activeElement !== previousElement.current && pos) {
       categoryRefs.current[activeElement].classList.add('Active');
-      previousElement.current !== '' && categoryRefs.current[previousElement.current].classList.remove('Active');
+      previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
     }
-    if (typeof activeElement === 'string' && activeElement === '') {
+    if (activeElement === 0 && categoryRefs.current[previousElement.current]) {
       categoryRefs.current[previousElement.current].classList.remove('Active');
     }
     previousElement.current = activeElement;
@@ -77,7 +82,7 @@ function App() {
         duration: 1000,
         smooth: 'easeInOutQuad',
       });
-      setActiveElement('');
+      setActiveElement(0);
     }
     if (pos) {
       scroll.scrollToBottom({
@@ -87,10 +92,16 @@ function App() {
     }
   }, [pos]);
 
-  function navigate(index, element) {
-    navigateURL('/' + element.replace(' ', '_'));
+  function navigate(index: number, element: CategoryObj) {
+    // navigateURL('/' + element.replace(' ', '_'));
     setActiveElement(index);
     previousElement.current === index ? setPos(false) : setPos(true);
+  }
+
+  function handleString(string: CategoryObj) {
+    const obj = Object.keys(string)[0];
+    const str = obj.charAt(0).toUpperCase() + obj.slice(1);
+    return str.replace('_', ' ');
   }
 
   return (

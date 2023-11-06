@@ -4,8 +4,17 @@ import { Element } from "react-scroll";
 import { useEffect, useState, useRef, createRef } from 'react';
 
 
-function Category(props) {
-  const [projects, setProjects] = useState([]);
+interface CategoryObj {
+  [key: string]: Array<string>
+}
+interface Props {
+  element: CategoryObj,
+  index: number,
+  handleString: Function
+}
+
+function Category({element, index, handleString}: Props) {
+  const [projects, setProjects] = useState(Array<JSX.Element>);
 
   useEffect(() => {
     const tempProjects = [
@@ -14,7 +23,7 @@ function Category(props) {
       'Sekalaiset'
     ];
 
-    const tempArr = [];
+    const tempArr: Array<JSX.Element> = [];
     tempProjects.forEach(project => {
       tempArr.push(
         <button key={`menu_${project}`}>
@@ -27,13 +36,13 @@ function Category(props) {
   }, []);
 
   return (
-    <Element name={`category${props.index}`} className='CategoryContainer'>
+    <Element name={`category${index}`} className='CategoryContainer'>
       <div className='Category'>
         <div className='Menu'>
           <h3>Kategoriat</h3>
           {projects}
         </div>
-        <h2>{props.element}</h2>
+        <h2>{handleString(element)}</h2>
         <div className='TextContainer'>
           <div id='TextBG'></div>
         </div>

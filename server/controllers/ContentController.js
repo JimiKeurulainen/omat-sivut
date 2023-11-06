@@ -9,14 +9,14 @@ export const getContent = async (req, res) => {
         const categories = [];
         console.log('files', files);
 
-        // files.forEach(element => {
-        //     const file = fs.readFileSync(path.join(url, element), {encoding: 'base64'});
-        //     const name = element.split('.')[0];
-        //     categories.push([name, file]);
-        // })
+        files.forEach(dir => {
+            const files = fs.readdirSync(url+dir);
+            categories.push({[dir]: files});
+        })
+        console.log(categories);
 
         res.json({
-            "data": files
+            "data": categories
         })
     } catch (error) {
         res.json({ message: error.message });
