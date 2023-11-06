@@ -16,10 +16,10 @@ function App() {
 
   const [buttons, setButtons] = useState(Array<JSX.Element>);
   const [lowers, setLowers] = useState(Array<JSX.Element>);
-  const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
-
   const [activeElement, setActiveElement] = useState(0);
   const [pos, setPos] = useState(false);
+  
+  const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const previousElement = useRef<number>(0);
   const nodeRef = useRef(null);
 
@@ -64,8 +64,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(categoryRefs.current[activeElement]);
-
     if (activeElement !== previousElement.current && pos) {
       categoryRefs.current[activeElement].classList.add('Active');
       previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
@@ -93,15 +91,20 @@ function App() {
   }, [pos]);
 
   function navigate(index: number, element: CategoryObj) {
-    // navigateURL('/' + element.replace(' ', '_'));
+    // navigateURL('/' + Object.keys(element)[0]);
     setActiveElement(index);
     previousElement.current === index ? setPos(false) : setPos(true);
   }
 
-  function handleString(string: CategoryObj) {
-    const obj = Object.keys(string)[0];
-    const str = obj.charAt(0).toUpperCase() + obj.slice(1);
-    return str.replace('_', ' ');
+  function handleString(string: any) {    
+    if (typeof string !== 'string') {
+      const obj = Object.keys(string)[0];
+      const str = obj.charAt(0).toUpperCase() + obj.slice(1);
+      return str.replace('_', ' ');
+    }
+    else {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
   }
 
   return (

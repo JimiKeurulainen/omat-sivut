@@ -1,7 +1,7 @@
 // import './App.css';
 import './Category.scss';
 import { Element } from "react-scroll";
-import { useEffect, useState, useRef, createRef } from 'react';
+import { useEffect, useState } from 'react';
 
 
 interface CategoryObj {
@@ -17,17 +17,11 @@ function Category({element, index, handleString}: Props) {
   const [projects, setProjects] = useState(Array<JSX.Element>);
 
   useEffect(() => {
-    const tempProjects = [
-      'Ohjelmointi',
-      '3D-mallinnus',
-      'Sekalaiset'
-    ];
-
     const tempArr: Array<JSX.Element> = [];
-    tempProjects.forEach(project => {
+    Object.values(element)[0].forEach(project => {
       tempArr.push(
         <button key={`menu_${project}`}>
-          <p>{project}</p>
+          <p>{handleString(project)}</p>
           <div></div>
         </button>
       )
