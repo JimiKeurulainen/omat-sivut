@@ -32,10 +32,12 @@ function Category({element, index, handleString}: Props) {
   return (
     <Element name={`category${index}`} className='CategoryContainer'>
       <div className='Category'>
+        {projects.length !== 0 &&
         <div className='Menu'>
           <h3>Kategoriat</h3>
           {projects}
         </div>
+        }
         <h2>{handleString(element)}</h2>
         <div className='TextContainer'>
           <div id='TextBG'></div>

@@ -98,9 +98,9 @@ function App() {
 
   function handleString(string: any) {    
     if (typeof string !== 'string') {
-      const obj = Object.keys(string)[0];
+      const obj = Object.keys(string)[0].slice(2);
       const str = obj.charAt(0).toUpperCase() + obj.slice(1);
-      return str.replace('_', ' ');
+      return str.replace(/_/g, ' ');
     }
     else {
       return string.charAt(0).toUpperCase() + string.slice(1);
