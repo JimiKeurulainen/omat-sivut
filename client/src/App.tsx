@@ -2,7 +2,7 @@
 import './App.scss';
 import { useEffect, useState, useRef, Ref } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import { Link, animateScroll as scroll } from "react-scroll";
+import { Link, scroller, animateScroll as scroll } from "react-scroll";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Category from './Category';
@@ -17,6 +17,7 @@ function App() {
   const [buttons, setButtons] = useState(Array<JSX.Element>);
   const [lowers, setLowers] = useState(Array<JSX.Element>);
   const [activeElement, setActiveElement] = useState(0);
+  const [categories, setCategories] = useState(Array<string>);
   const [pos, setPos] = useState(false);
   
   const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
@@ -24,15 +25,17 @@ function App() {
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/content').then(res => {
-      console.log('refs', res);
-
+    axios.get('https://jimikeurulainen.site/content').then(res => {
+      // Add temporary categories that will be used to set states
+      const tempCategories: Array<string> = [];
       const tempBtns: Array<JSX.Element> = [];
       const tempLowers: Array<JSX.Element> = [];
       
+      // Loop through the response and add items to temporary arrays accordingly
       res.data.data.forEach((element: CategoryObj, index: number) => {
         index += 1;
 
+        tempCategories.push(Object.keys(element)[0].slice(2));
         tempBtns.push(
           <Link
             className='Nappi'
@@ -53,23 +56,34 @@ function App() {
           <Category index={index} element={element} handleString={handleString} key={`category${index}`}></Category>
         );
       });
+      setCategories(tempCategories);
       setButtons(tempBtns);
       setLowers(tempLowers);
-    });
 
-    // const href = window.location.href.split('/')[3];
-    // if (href !== '') {
-    //   setPos(true);
-    // }
+      // Navigate to correct position onload based on URL
+      const href = window.location.href.split('/')[3];
+      if (href !== '') {
+        setPos(true);
+        setActiveElement(tempCategories.indexOf(href) + 1);
+      }
+    });
   }, []);
 
   useEffect(() => {
     if (activeElement !== previousElement.current && pos) {
       categoryRefs.current[activeElement].classList.add('Active');
       previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
+
+      console.log(`category${categories.indexOf(window.location.href.split('/')[3]) + 1}`);
+      scroller.scrollTo(`category${categories.indexOf(window.location.href.split('/')[3]) + 1}`, {
+        duration: 500,
+        containerId: 'Lower',
+        isDynamic: true,
+      });
     }
     if (activeElement === 0 && categoryRefs.current[previousElement.current]) {
       categoryRefs.current[previousElement.current].classList.remove('Active');
+      navigateURL('/');
     }
     previousElement.current = activeElement;
   }, [activeElement]);
@@ -91,7 +105,7 @@ function App() {
   }, [pos]);
 
   function navigate(index: number, element: CategoryObj) {
-    // navigateURL('/' + Object.keys(element)[0]);
+    navigateURL('/' + Object.keys(element)[0].slice(2));
     setActiveElement(index);
     previousElement.current === index ? setPos(false) : setPos(true);
   }
