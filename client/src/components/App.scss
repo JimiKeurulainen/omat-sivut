@@ -8,6 +8,7 @@ body {
   color: white;
   font-weight: 100;
   font-size: 20px;
+  font-style: italic;
   overflow-y: hidden;
 }
 code {
@@ -30,6 +31,9 @@ code {
   header {
     width: 100%;
     height: 10%;
+    display: flex;
+    justify-content: center;
+    font-size: 1.4em;
     background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
   }
   button {
@@ -51,7 +55,6 @@ code {
     align-items: center;
     justify-content: center;
     font-size: 1.6em;
-    font-style: italic;
     transition: all 0.2s;
     z-index: 1;
   
