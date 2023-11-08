@@ -45,7 +45,7 @@ function Category({element, index, handleString}: Props) {
         <CSSTransition
         nodeRef={menuRef}
         in={menuPos}
-        timeout={500}
+        timeout={0}
         classNames="Menu">
           <div ref={menuRef} className='Menu'>
             <h3>Kategoriat</h3>

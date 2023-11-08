@@ -1,9 +1,8 @@
 import fs from "fs";
-import path from "path";
+
 
 export const getContent = async (req, res) => {
     const url = './content/';
-    // const url = './var/www/jimikeurulainen/content/'; 
     try {
         const files = fs.readdirSync(url);
         const categories = [];

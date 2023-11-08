@@ -4,6 +4,8 @@ import { useEffect, useState, useRef, Ref } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { Link, scroller, animateScroll as scroll } from "react-scroll";
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Category from './Category';
 
@@ -48,8 +50,9 @@ function App() {
             duration={500}
             onClick={() => navigate(index, element)}
           >
-            <p>{handleString(element)}</p>
             <div ref={(el: HTMLDivElement) => categoryRefs.current[index] = el} key={`nappiBG${index}`}></div>
+            <FontAwesomeIcon icon={faCaretUp} className='CaretIcon'/>
+            <p>{handleString(element)}</p>
           </Link>
         );
         tempLowers.push(
@@ -125,10 +128,11 @@ function App() {
         </div>
 
         <CSSTransition
-        nodeRef={nodeRef}
-        in={pos}
-        timeout={1000}
-        classNames="Navbar">
+          nodeRef={nodeRef}
+          in={pos}
+          timeout={1000}
+          classNames="Navbar"
+        >
           <div ref={nodeRef} className='Navbar'>
             {buttons}
             <div id='NavbarBG'></div>
