@@ -2,6 +2,8 @@
 import './Category.scss';
 import { Element } from "react-scroll";
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 
 interface CategoryObj {
@@ -38,7 +40,10 @@ function Category({element, index, handleString}: Props) {
           {projects}
         </div>
         }
-        <h2>{handleString(element)}</h2>
+        <div className='CategoryHeader'>
+          <FontAwesomeIcon icon={faBars} />
+          <h2>{handleString(element)}</h2>
+        </div>
         <div className='TextContainer'>
           <div id='TextBG'></div>
         </div>
