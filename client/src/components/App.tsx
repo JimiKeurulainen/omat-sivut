@@ -14,10 +14,10 @@ interface CategoryObj {
 function App() {
   const navigateURL = useNavigate();
 
+  const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
   const [lowers, setLowers] = useState(Array<JSX.Element>);
   const [activeElement, setActiveElement] = useState(0);
-  const [categories, setCategories] = useState(Array<string>);
   const [pos, setPos] = useState(false);
   
   const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
@@ -25,7 +25,7 @@ function App() {
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    axios.get('https://jimikeurulainen.site/content').then(res => {
+    axios.get('http://jimikeurulainen.site/content').then(res => {
       // Add temporary categories that will be used to set states
       const tempCategories: Array<string> = [];
       const tempBtns: Array<JSX.Element> = [];
@@ -74,7 +74,6 @@ function App() {
       categoryRefs.current[activeElement].classList.add('Active');
       previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
 
-      console.log(`category${categories.indexOf(window.location.href.split('/')[3]) + 1}`);
       scroller.scrollTo(`category${categories.indexOf(window.location.href.split('/')[3]) + 1}`, {
         duration: 500,
         containerId: 'Lower',
@@ -110,15 +109,13 @@ function App() {
     previousElement.current === index ? setPos(false) : setPos(true);
   }
 
-  function handleString(string: any) {    
-    if (typeof string !== 'string') {
-      const obj = Object.keys(string)[0].slice(2);
-      const str = obj.charAt(0).toUpperCase() + obj.slice(1);
-      return str.replace(/_/g, ' ');
-    }
-    else {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+  function handleString(string: any) {
+    // Check string attribute data type and slice the order prefix
+    const str = typeof string !== 'string' ? Object.keys(string)[0].slice(2) : string.slice(2);
+    // Capitalize the first letter of the string
+    const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+    // Replace underlines with white space and return string
+    return capitalized.replace(/_/g, ' ');
   }
 
   return (
