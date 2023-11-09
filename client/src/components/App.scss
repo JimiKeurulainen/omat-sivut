@@ -7,7 +7,7 @@ body {
   background-color: rgb(0, 0, 0);
   color: white;
   font-weight: 100;
-  font-size: 20px;
+  font-size: 16px;
   font-style: italic;
   overflow-y: hidden;
 }
@@ -127,12 +127,12 @@ code {
       opacity: 1;
     }
     .Active ~ p {
-      transform: translateY(2vh);
+      transform: translateY(1.6vh);
     }
   }
   .Nappi:hover {
     p {
-      transform: translateY(2vh);
+      transform: translateY(1.6vh);
     }
   }
 }

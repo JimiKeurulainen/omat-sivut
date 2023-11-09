@@ -2,25 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './components/App.scss';
 import App from './components/App';
+import ErrorPage from './components/ErrorPage';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-  },
-  {
-    path: "/Tietoa_minusta",
-    element: <App />,
-  },
-  {
-    path: "/Projektini",
-    element: <App />,
-  },
-  {
-    path: "/Kanavani",
-    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {path: '', element: <App />},
+      {path: 'tietoa_minusta', element: <App />},
+      {path: 'projektini', element: <App />},
+      {path: 'kanavani', element: <App />}
+    ]
   }
 ]);
 

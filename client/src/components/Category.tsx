@@ -3,8 +3,10 @@ import './Category.scss';
 import { Element } from "react-scroll";
 import { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
+import HTMLContent from './HTMLContent';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 interface CategoryObj {
@@ -17,7 +19,11 @@ interface Props {
 }
 
 function Category({element, index, handleString}: Props) {
+  const navigateURL = useNavigate();
+  const { params } = useParams();
+
   const [projects, setProjects] = useState(Array<JSX.Element>);
+  const [activeProject, setActiveProject] = useState('');
   const [menuPos, setMenuPos] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -25,18 +31,26 @@ function Category({element, index, handleString}: Props) {
     const tempArr: Array<JSX.Element> = [];
     Object.values(element)[0].forEach(project => {
       tempArr.push(
-        <button key={`menu_${project}`}>
-          <p>{handleString(project)}</p>
-          <div></div>
-        </button>
+        <div className='SubmenuContainer'>
+          <button key={`menu_${project}`} onClick={() => openSubCategory(project)}>
+            <FontAwesomeIcon icon={faCaretRight} />
+            <p>{handleString(project)}</p>
+            <div></div>
+          </button>
+          <div className='Submenu'>
+            
+          </div>
+        </div>
       )
     });
     setProjects(tempArr);
   }, []);
 
-  // useEffect(() => {
-  //   menuPos ? menuRef.current?.classList.add('MenuActive') : menuRef.current?.classList.remove('MenuActive');
-  // }, [menuPos])
+  function openSubCategory(category: any) {
+    console.log(category, params);
+    navigateURL('/' + Object.keys(element)[0].slice(2));
+    setActiveProject(category);
+  }
 
   return (
     <Element name={`category${index}`} className='CategoryContainer'>
@@ -60,6 +74,7 @@ function Category({element, index, handleString}: Props) {
           <h2>{handleString(element)}</h2>
         </div>
         <div className='TextContainer'>
+          <HTMLContent ID={handleString(element)}></HTMLContent>
           <div id='TextBG'></div>
         </div>
       </div>
