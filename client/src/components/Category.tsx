@@ -7,6 +7,8 @@ import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import HTMLContent from './HTMLContent';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import Submenu from './Submenu';
 
 
 interface CategoryObj {
@@ -20,50 +22,61 @@ interface Props {
 
 function Category({element, index, handleString}: Props) {
   const navigateURL = useNavigate();
-  const { params } = useParams();
 
-  const [projects, setProjects] = useState(Array<JSX.Element>);
-  const [activeProject, setActiveProject] = useState('');
+  const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
+  const [submenuStates, setSubmenuStates] = useState(Array<JSX.Element>);
+  const [active, setActive] = useState(Array<boolean>);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const tempArr: Array<JSX.Element> = [];
-    Object.values(element)[0].forEach(project => {
-      tempArr.push(
-        <div className='SubmenuContainer'>
-          <button key={`menu_${project}`} onClick={() => openSubCategory(project)}>
-            <FontAwesomeIcon icon={faCaretRight} />
-            <p>{handleString(project)}</p>
-            <div></div>
-          </button>
-          <div className='Submenu'>
-            
-          </div>
-        </div>
-      )
-    });
-    setProjects(tempArr);
+    setCategories(Object.values(element)[0].map((project, index1) => {
+      return (
+        <button onClick={() => openSubCategory(project, index1)}>
+          <FontAwesomeIcon icon={faCaretRight} />
+          <p>{handleString(project)}</p>
+          <div></div>
+        </button>
+      );
+    }));
+    setSubmenuStates(Object.values(element)[0].map(() => {
+      return <br />;
+    }));
   }, []);
 
-  function openSubCategory(category: any) {
-    console.log(category, params);
-    navigateURL('/' + Object.keys(element)[0].slice(2));
-    setActiveProject(category);
+  function openSubCategory(project: any, index: number) {
+    setSubmenuStates(submenuStates => submenuStates.map((state, i) => {
+      if (i === index && state.type === 'br') {
+        return state = <Submenu category={Object.keys(element)[0]} subcategory={project}></Submenu>;
+      }
+      else if (i === index && state.type !== 'br') {
+        return state = <br />
+      }
+      else {
+        return state;
+      }
+    }));
   }
 
   return (
     <Element name={`category${index}`} className='CategoryContainer'>
       <div className='Category'>
-        {projects.length !== 0 &&
+        {categories.length !== 0 &&
         <CSSTransition
-        nodeRef={menuRef}
-        in={menuPos}
-        timeout={0}
-        classNames="Menu">
+          nodeRef={menuRef}
+          in={menuPos}
+          timeout={0}
+          classNames="Menu"
+        >
           <div ref={menuRef} className='Menu'>
             <h3>Kategoriat</h3>
-            {projects}
+            {submenuStates.map((state, index) => {
+            return (
+              <div className='SubmenuContainer'>
+                {categories[index]}
+                {submenuStates[index]}
+              </div>
+            )})}
           </div>
         </CSSTransition>
         }

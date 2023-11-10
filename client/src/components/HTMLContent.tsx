@@ -11,9 +11,7 @@ function Category({ID}: Props) {
   const [document, setDocument] = useState('');
 
   useEffect(() => {
-    console.log('ID', ID);
-    axios.get(`http://jimikeurulainen.site/content/2_projektini/1_ohjelmointi`).then((res: any) => {
-      console.log('res', res.data.data);
+    axios.get(`http://jimikeurulainen.site/content/2_projektini/1_ohjelmointi/`).then((res: any) => {
       setDocument(res.data.data);
     });
   }, []);
