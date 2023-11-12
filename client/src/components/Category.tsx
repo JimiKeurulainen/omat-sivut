@@ -38,7 +38,7 @@ function Category({element, index}: Props) {
   useEffect(() => {
     setCategories(Object.values(element)[0].map((project: CategoryObj, index1: number) => {
       return (
-        <div className='SubmenuContainer' ref={(el: HTMLDivElement) => submenuRefs.current[index1] = el}>
+        <div className='SubmenuContainer' ref={(el: HTMLDivElement) => submenuRefs.current[index1] = el} key={'subcontainer'+index1}>
           <button onClick={() => openSubCategory(project, index1)}>
             <FontAwesomeIcon icon={faCaretRight} />
             <p>{handleString(Object.keys(project)[0])}</p>

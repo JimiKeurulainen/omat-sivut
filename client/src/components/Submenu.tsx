@@ -27,7 +27,7 @@ function Submenu(props: Props) {
     // console.log('props', props.data);
     setSubmenu(Object.values(props.data)[0].map((project: string) => {
       return (
-      <button ref={buttonRef} onClick={() => props.setActiveHTML(`/${Object.keys(props.data)[0]}/${project}`)}>
+      <button ref={buttonRef} onClick={() => props.setActiveHTML(`/${Object.keys(props.data)[0]}/${project}`)} key={'projectBtn'+project}>
         <p>{handleString(project)}</p>
         <div></div>
       </button>

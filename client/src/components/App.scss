@@ -96,7 +96,7 @@ code {
   top: 85%;
 }
 .Navbar-enter-active {
-  height: 10%;
+  height: 8%;
   top: 100%;
   transition: all 1s;
 
@@ -114,7 +114,7 @@ code {
   }
 }
 .Navbar-enter-done {
-  height: 10%;
+  height: 8%;
   top: 100%;
   transition: all 1s;
 
@@ -127,12 +127,12 @@ code {
       opacity: 1;
     }
     .Active ~ p {
-      transform: translateY(1.6vh);
+      transform: translateY(0.6vh);
     }
   }
   .Nappi:hover {
     p {
-      transform: translateY(1.6vh);
+      transform: translateY(0.6vh);
     }
   }
 }

@@ -1,5 +1,5 @@
 import './HTMLContent.scss';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
@@ -8,17 +8,30 @@ interface Props {
 }
 
 function HTMLContent(props: Props) {
-  const [document, setDocument] = useState('');
+  const [documentData, setDocumentData] = useState('');
+  const [documentImages, setDocumentImages] = useState(Array<string>);
 
   useEffect(() => {
     console.log('id', props.ID);
     axios.get(`http://jimikeurulainen.site/content/${props.ID}`).then((res: any) => {
-      setDocument(res.data.data);
+      console.log('res', res);
+      if (res.data.images.length > 0) {
+        setDocumentImages(res.data.images);
+      }
+      setDocumentData(res.data.data);
     });
   }, []);
 
+  useEffect(() => {
+    const images = document.querySelectorAll('.HTMLContent img');
+    console.log('images', images, documentImages);
+    documentImages.length > 0 && images[0].setAttribute('src', 'data:image/png;base64,' + documentImages[0]);
+    const kehys = document.getElementById('Kehys1')?.style;
+    kehys && (kehys.display = 'none');
+  }, [documentData, documentImages]);
+
   return (
-    <div className='HTMLContent' dangerouslySetInnerHTML={{__html: document}}></div>
+      <div className='HTMLContent' dangerouslySetInnerHTML={{__html: documentData}}></div>
   )
 }
 

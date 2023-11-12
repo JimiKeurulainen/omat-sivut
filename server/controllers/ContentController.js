@@ -29,12 +29,21 @@ export const getFile = async (req, res) => {
     const url = path.join('/var/www/jimikeurulainen/content/', req.params.category, req.params.subcategory, req.params.file);
 
     try {
-        const file = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
-        console.log('path', file);
+        const dir = fs.readdirSync(url);
+        const images = [];
+        dir.forEach(file => {
+            console.log('file', file);
+            const nameArr = file.split(".");
+            if (nameArr[nameArr.length - 1] !== 'html') {
+                images.push(fs.readFileSync(path.join(url, file), {encoding: 'base64'}));
+            } 
+        })
+        const html = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
 
         res.setHeader('Content-Type', 'text/html');
         res.json({
-            "data": file
+            "data": html,
+            "images": images
         })
     } catch (error) {
         res.json({ message: error.message });
