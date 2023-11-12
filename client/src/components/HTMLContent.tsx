@@ -7,11 +7,12 @@ interface Props {
   ID: string
 }
 
-function Category({ID}: Props) {
+function HTMLContent(props: Props) {
   const [document, setDocument] = useState('');
 
   useEffect(() => {
-    axios.get(`http://jimikeurulainen.site/content/2_projektini/1_ohjelmointi/`).then((res: any) => {
+    console.log('id', props.ID);
+    axios.get(`http://jimikeurulainen.site/content/${props.ID}`).then((res: any) => {
       setDocument(res.data.data);
     });
   }, []);
@@ -21,4 +22,4 @@ function Category({ID}: Props) {
   )
 }
 
-export default Category;
+export default HTMLContent;

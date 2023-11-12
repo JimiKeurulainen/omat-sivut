@@ -1,12 +1,11 @@
 import express from "express";
 import {
-    getCategories, getFiles, getHTMLContent
+    getRoutes, getFile
 } from "../controllers/ContentController.js";
 
 const router = express.Router();
  
-router.get('/', getCategories);
-router.get('/:id/:id1', getFiles);
-router.get('/file/:id', getHTMLContent);
+router.get('/routes', getRoutes);
+router.get('/:category/:subcategory/:file', getFile);
  
 export default router;

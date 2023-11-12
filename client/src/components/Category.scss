@@ -52,7 +52,6 @@
         width: 100%;
         text-align: left;
         padding: 10px;
-        margin-bottom: 5px;
         font-size: 1em;
         background-color: rgba(0, 0, 0, 0);
         border-radius: 10px 0px 0px 10px;
@@ -65,6 +64,8 @@
         z-index: 1;
   
         svg {
+          transition: transform 0.5s;
+          transform: rotate(0deg);
           z-index: 1;
         }
         p {
@@ -89,9 +90,19 @@
         opacity: 1;
         cursor: pointer;
       }
-      .Submenu {
-        width: 95%;
-        // background-color: red;
+    }
+    .Active {
+      flex-basis: min-content;
+      flex-direction: column;
+
+      button {
+        svg {
+          transition: transform 0.5s;
+          transform: rotate(90deg);
+        }
+        p {
+          text-shadow: 1px 1px 50px white;
+        }
       }
     }
   }

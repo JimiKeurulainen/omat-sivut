@@ -1,56 +1,72 @@
 // import './App.css';
 import './Category.scss';
 import { Element } from "react-scroll";
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, createContext, useContext, createRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import HTMLContent from './HTMLContent';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { handleString } from './Root';
 import Submenu from './Submenu';
 
 
 interface CategoryObj {
-  [key: string]: Array<string>
+  [key: string]: {
+    [key: string]: any
+  }
 }
 interface Props {
   element: CategoryObj,
   index: number,
-  handleString: Function
 }
 
-function Category({element, index, handleString}: Props) {
+const StateContext = createContext([false]);
+export const useStateContext = () => useContext(StateContext);
+
+function Category({element, index}: Props) {
   const navigateURL = useNavigate();
 
   const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
-  const [submenuStates, setSubmenuStates] = useState(Array<JSX.Element>);
-  const [active, setActive] = useState(Array<boolean>);
+  const [submenuStates, setSubmenuStates] = useState(Array<boolean>);
+  const [activeHTML, setActiveHTML] = useState('');
+  
+  const submenuRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setCategories(Object.values(element)[0].map((project, index1) => {
+    setCategories(Object.values(element)[0].map((project: CategoryObj, index1: number) => {
       return (
-        <button onClick={() => openSubCategory(project, index1)}>
-          <FontAwesomeIcon icon={faCaretRight} />
-          <p>{handleString(project)}</p>
-          <div></div>
-        </button>
+        <div className='SubmenuContainer' ref={(el: HTMLDivElement) => submenuRefs.current[index1] = el}>
+          <button onClick={() => openSubCategory(project, index1)}>
+            <FontAwesomeIcon icon={faCaretRight} />
+            <p>{handleString(Object.keys(project)[0])}</p>
+            <div></div>
+          </button>
+          <Submenu data={project} index={index1} setActiveHTML={setActiveHTML}></Submenu>
+        </div>
       );
     }));
     setSubmenuStates(Object.values(element)[0].map(() => {
-      return <br />;
+      return false;
     }));
   }, []);
 
+  useEffect(() => {
+    console.log('activehtml', activeHTML);
+  }, [activeHTML]);
+
   function openSubCategory(project: any, index: number) {
-    setSubmenuStates(submenuStates => submenuStates.map((state, i) => {
-      if (i === index && state.type === 'br') {
-        return state = <Submenu category={Object.keys(element)[0]} subcategory={project}></Submenu>;
-      }
-      else if (i === index && state.type !== 'br') {
-        return state = <br />
+    setSubmenuStates(submenuStates => submenuStates.map((state: boolean, i: number) => {
+      if (i === index) {
+        if (submenuRefs.current[i].classList.contains('Active')) {
+          submenuRefs.current[i].classList.remove('Active');
+        }
+        else {
+          submenuRefs.current[i].classList.add('Active');
+        }
+        return !state;
       }
       else {
         return state;
@@ -59,39 +75,35 @@ function Category({element, index, handleString}: Props) {
   }
 
   return (
-    <Element name={`category${index}`} className='CategoryContainer'>
-      <div className='Category'>
-        {categories.length !== 0 &&
-        <CSSTransition
-          nodeRef={menuRef}
-          in={menuPos}
-          timeout={0}
-          classNames="Menu"
-        >
-          <div ref={menuRef} className='Menu'>
-            <h3>Kategoriat</h3>
-            {submenuStates.map((state, index) => {
-            return (
-              <div className='SubmenuContainer'>
-                {categories[index]}
-                {submenuStates[index]}
-              </div>
-            )})}
+    <StateContext.Provider value={submenuStates}>
+      <Element name={`category${index}`} className='CategoryContainer'>
+        <div className='Category'>
+          {categories.length !== 0 &&
+          <CSSTransition
+            nodeRef={menuRef}
+            in={menuPos}
+            timeout={0}
+            classNames="Menu"
+          >
+            <div ref={menuRef} className='Menu'>
+              <h3>Kategoriat</h3>
+              {categories}
+            </div>
+          </CSSTransition>
+          }
+          <div className='CategoryHeader'>
+            <button className='MenuButton' onClick={() => setMenuPos(menuPos => !menuPos)}>
+              <FontAwesomeIcon icon={faBars}/>
+            </button>
+            <h2>{handleString(Object.keys(element)[0])}</h2>
           </div>
-        </CSSTransition>
-        }
-        <div className='CategoryHeader'>
-          <button className='MenuButton' onClick={() => setMenuPos(menuPos => !menuPos)}>
-            <FontAwesomeIcon icon={faBars}/>
-          </button>
-          <h2>{handleString(element)}</h2>
+          <div className='TextContainer'>
+            {activeHTML !== '' && <HTMLContent ID={Object.keys(element)[0] + activeHTML}></HTMLContent>}
+            <div id='TextBG'></div>
+          </div>
         </div>
-        <div className='TextContainer'>
-          <HTMLContent ID={handleString(element)}></HTMLContent>
-          <div id='TextBG'></div>
-        </div>
-      </div>
-    </Element>
+      </Element>
+    </StateContext.Provider>
   )
 }
 

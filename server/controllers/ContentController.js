@@ -2,46 +2,35 @@ import fs from "fs";
 import path from "path";
 
 
-export const getCategories = async (req, res) => {
+export const getRoutes = async (req, res) => {
     const url = '/var/www/jimikeurulainen/content/';
     try {
-        const files = fs.readdirSync(url);
-        const categories = [];
+        const categories = fs.readdirSync(url);
 
-        files.forEach(dir => {
-            const files = fs.readdirSync(url+dir);
-            categories.push({[dir]: files});
-        })
-        console.log(categories);
-
-        res.json({
-            "data": categories
-        })
+        const routes = categories.map(category => {
+            const subcategories = fs.readdirSync(url + category);
+            const palaute = subcategories.map(subcategory => {
+                if (subcategory) {
+                    return {[subcategory]: fs.readdirSync(url + category + '/' + subcategory)}
+                }
+                else {
+                    return [];
+                }
+            })
+            return {[category]: palaute};
+        });
+        res.send(routes);
     } catch (error) {
         res.json({ message: error.message });
     }   
 }
 
-export const getFiles = async (req, res) => {
-    const url = path.join('/var/www/jimikeurulainen/content/', req.params.id, req.params.id1);
+export const getFile = async (req, res) => {
+    const url = path.join('/var/www/jimikeurulainen/content/', req.params.category, req.params.subcategory, req.params.file);
 
     try {
-        const dir = fs.readdirSync(url);
-
-        res.json({
-            "data": dir
-        })
-    } catch (error) {
-        res.json({ message: error.message });
-    }   
-}
-
-export const getHTMLContent = async (req, res) => {
-    const url = path.join('/var/www/jimikeurulainen/content/', req.params.id, req.params.id1);
-
-    try {
-        const file = fs.readFileSync(path.join(url, dir[0]), {encoding: 'utf8'});
-        console.log('path', dir, file);
+        const file = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
+        console.log('path', file);
 
         res.setHeader('Content-Type', 'text/html');
         res.json({
