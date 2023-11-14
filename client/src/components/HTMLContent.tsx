@@ -8,12 +8,14 @@ interface Props {
 }
 
 function HTMLContent(props: Props) {
+  const filesURL = process.env.REACT_APP_FILES ? process.env.REACT_APP_FILES : 'no env variable';
+
   const [documentData, setDocumentData] = useState('');
   const [documentImages, setDocumentImages] = useState(Array<string>);
 
   useEffect(() => {
     console.log('id', props.ID);
-    axios.get(`http://jimikeurulainen.site/content/${props.ID}`).then((res: any) => {
+    axios.get(`${filesURL}/${props.ID}`).then((res: any) => {
       console.log('res', res);
       if (res.data.images.length > 0) {
         setDocumentImages(res.data.images);

@@ -1,12 +1,12 @@
 // import './App.css';
 import './Category.scss';
 import { Element } from "react-scroll";
-import { useEffect, useState, useRef, createContext, useContext, createRef } from 'react';
+import { useEffect, useState, useRef, createContext, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import HTMLContent from './HTMLContent';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { handleString } from './Root';
 import Submenu from './Submenu';
 

@@ -16,11 +16,7 @@ interface SubRouteObj {
 }
 
 export function handleString(string: any) {
-  // console.log('handlestring', string);
   // Check string attribute data type and slice the order prefix
-  // if (string.length === 0) {
-  //   return '';
-  // }
   const str = typeof string !== 'string' ? Object.keys(string)[0].slice(2) : string.slice(2);
   // Capitalize the first letter of the string
   const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
@@ -32,11 +28,14 @@ const DataContext = createContext<Array<RouteObj>>([{default: {default1: ['defau
 export const useDataContext = () => useContext(DataContext);
 
 function Root() {
-  const [data, setData] = useState(Array<RouteObj>)
+  const routesURL = process.env.REACT_APP_ROUTES ? process.env.REACT_APP_ROUTES : 'no env variable';
+  
+  const [data, setData] = useState(Array<RouteObj>);
   const [routes, setRoutes] = useState(Array<JSX.Element>);
 
   useEffect(() => {
-    axios.get('http://jimikeurulainen.site/content/routes').then(res => {
+    console.log(routesURL);
+    axios.get(routesURL).then(res => {
       console.log('res', res);
       setRoutes(res.data.map((route: RouteObj, i1: number) => {
         return (<Route path={Object.keys(route)[0].slice(2)} element={<App />} key={'route'+route}>
