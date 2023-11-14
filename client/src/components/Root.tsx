@@ -37,6 +37,7 @@ function Root() {
 
   useEffect(() => {
     axios.get('http://jimikeurulainen.site/content/routes').then(res => {
+      console.log('res', res);
       setRoutes(res.data.map((route: RouteObj, i1: number) => {
         return (<Route path={Object.keys(route)[0].slice(2)} element={<App />} key={'route'+route}>
           {Object.values(route).map((subroute: SubRouteObj, i2: number) => {
