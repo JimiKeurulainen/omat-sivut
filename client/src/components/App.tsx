@@ -121,7 +121,7 @@ function App() {
         <CSSTransition
           nodeRef={nodeRef}
           in={pos}
-          timeout={1000}
+          timeout={0}
           classNames="Navbar"
         >
           <div ref={nodeRef} className='Navbar'>
