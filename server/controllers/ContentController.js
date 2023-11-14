@@ -7,21 +7,21 @@ function hex2a(hexx) {
     var str = '';
     for (var i = 0; i < hex.length; i += 2)
         str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str.replaceAll('ä', '\xe4');
+    return str;
 }
 
 export const getRoutes = async (req, res) => {
     const url = '/var/www/jimikeurulainen/content/';
-    const encoding = 'hex';
+    const encoding = 'utf8';
     try {
         const categories = fs.readdirSync(url, {encoding: encoding});
 
         const routes = categories.map(category => {
-            const subcategories = fs.readdirSync(url + hex2a(category), {encoding: encoding});
+            const subcategories = fs.readdirSync(url + category, {encoding: encoding});
             const palaute = subcategories.map(subcategory => {
-                console.log('file', subcategory, "'" + hex2a(subcategory) + "'");
+                console.log('file', subcategory, hex2a(subcategory));
                 if (subcategory) {
-                    return {[subcategory]: fs.readdirSync(url + hex2a(category) + '/' + "'" + hex2a(subcategory) + "'")}
+                    return {[subcategory]: fs.readdirSync(url + category + '/' + subcategory)}
                 }
                 else {
                     return [];

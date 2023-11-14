@@ -26,8 +26,6 @@ function HTMLContent(props: Props) {
     const images = document.querySelectorAll('.HTMLContent img');
     console.log('images', images, documentImages);
     documentImages.length > 0 && images[0].setAttribute('src', 'data:image/png;base64,' + documentImages[0]);
-    const kehys = document.getElementById('Kehys1')?.style;
-    kehys && (kehys.display = 'none');
   }, [documentData, documentImages]);
 
   return (
