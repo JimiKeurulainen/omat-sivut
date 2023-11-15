@@ -7,6 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import Category from './Category';
 import { useDataContext, handleString } from './Root';
+import Model from './Model';
+import { Canvas } from '@react-three/fiber';
+import { CameraControls, Environment, PerspectiveCamera } from '@react-three/drei';
+import THREE, { BackSide } from 'three';
+
 
 interface CategoryObj {
   [key: string]: {
@@ -116,6 +121,20 @@ function App() {
       <div id='App'>
         <div id='Upper'>
           <header>Jimi Keurulainen</header>
+          <Canvas>
+            <CameraControls minPolarAngle={0} maxPolarAngle={Math.PI / 1.6} />
+            {/* <ambientLight intensity={Math.PI / 2} /> */}
+            <Model position={[0, 0, 2]} />
+            <mesh rotation={[Math.PI / -2, 0, 0]}>
+              <sphereGeometry args={[150, 32, 16]}></sphereGeometry>
+              <meshStandardMaterial color={'black'} roughness={1} metalness={0} side={BackSide}/>
+            </mesh>
+            <mesh>
+
+            </mesh>
+            <Environment preset="studio" blur={1} />
+            <PerspectiveCamera makeDefault position={[0, 0, 18.5]} />
+          </Canvas>
         </div>
 
         <CSSTransition
