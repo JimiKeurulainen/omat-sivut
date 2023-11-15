@@ -8,9 +8,9 @@ import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import Category from './Category';
 import { useDataContext, handleString } from './Root';
 import Model from './Model';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { CameraControls, Environment, PerspectiveCamera } from '@react-three/drei';
-import THREE, { BackSide } from 'three';
+import THREE, { BackSide, ShadowMaterial } from 'three';
 
 
 interface CategoryObj {
@@ -26,12 +26,14 @@ function App() {
   const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
   const [lowers, setLowers] = useState(Array<JSX.Element>);
+  const [loading, setLoading] = useState(false);
   const [activeElement, setActiveElement] = useState(0);
   const [pos, setPos] = useState(false);
   
   const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const previousElement = useRef<number>(0);
   const nodeRef = useRef(null);
+  const appRef = useRef<any>(null);
 
   useEffect(() => {
       // Add temporary categories that will be used to set states
@@ -68,6 +70,7 @@ function App() {
       });
       setButtons(tempBtns);
       setLowers(tempLowers);
+      setLoading(true);
 
       // // Navigate to correct position onload based on URL
       // const href = window.location.href.split('/')[3];
@@ -111,6 +114,10 @@ function App() {
     }
   }, [pos]);
 
+  useEffect(() => {
+    console.log('loading', loading, appRef.current.classList);
+  }, [loading])
+
   function navigate(index: number, element: CategoryObj) {
     navigateURL('/' + Object.keys(element)[0].slice(2));
     setActiveElement(index);
@@ -118,22 +125,44 @@ function App() {
   }
 
   return (
-      <div id='App'>
+    <CSSTransition
+    nodeRef={appRef}
+    in={loading}
+    timeout={0}
+    classNames="App"
+    >
+      <div className='App' ref={appRef}>  
         <div id='Upper'>
           <header>Jimi Keurulainen</header>
-          <Canvas>
+          <Canvas shadows>
+            <fog attach="fog" args={['black', 0, 40]} />
             <CameraControls minPolarAngle={0} maxPolarAngle={Math.PI / 1.6} />
-            {/* <ambientLight intensity={Math.PI / 2} /> */}
+            <ambientLight />
+            <directionalLight 
+              position={[10, 5, 0]} 
+              color='rgb(49, 123, 173)' 
+              intensity={20} 
+              castShadow
+            >
+              <orthographicCamera attach="shadow-camera" args={[-10, 10, -10, 10, 0.1, 50]} />
+            </directionalLight>
+            <directionalLight position={[-10, 5, 10]} color='white' intensity={0.5} castShadow/>
+            <directionalLight position={[-5, 1, -7]} color='rgb(200, 200, 240)' intensity={10} castShadow/>
+
             <Model position={[0, 0, 2]} />
+
+            <mesh rotation={[Math.PI / -2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
+              <planeGeometry args={[300, 300]} />
+              <shadowMaterial transparent opacity={0.4} />
+              <meshStandardMaterial color={'grey'} roughness={0.2} metalness={0.9}/>
+            </mesh>
+
             <mesh rotation={[Math.PI / -2, 0, 0]}>
-              <sphereGeometry args={[150, 32, 16]}></sphereGeometry>
+              <sphereGeometry args={[150, 32, 16]} />
               <meshStandardMaterial color={'black'} roughness={1} metalness={0} side={BackSide}/>
             </mesh>
-            <mesh>
 
-            </mesh>
-            <Environment preset="studio" blur={1} />
-            <PerspectiveCamera makeDefault position={[0, 0, 18.5]} />
+            <PerspectiveCamera makeDefault position={[3, 0.5, 4]} />
           </Canvas>
         </div>
 
@@ -155,6 +184,7 @@ function App() {
           </div>
         </div>
       </div>
+    </CSSTransition>
   );
 }
 
