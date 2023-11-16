@@ -17,13 +17,20 @@
   border-radius: 20px;
   background-color: rgba(0, 0, 0, 0);
   z-index: 1;
-  font-size: 1.1em;
   text-align: left;
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0);
+  font-size: 18px;
   // scrollbar-width: thin;
  
   * {
     background-color: rgba(0, 0, 0, 0);
+  }
+  h2 {
+    font-size: 1.6em;
+    margin: 0.6em 0px;
+  }
+  font {
+    font-size: 1em;
   }
   p {
     margin-bottom: 1em;

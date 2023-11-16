@@ -21,4 +21,4 @@ app.use(busboy({
 
 app.use('/content', contentRoutes);
 
-http.createServer(app).listen(5000, () => console.log('Server running at port 5000'));
+http.createServer(app).listen(5555, () => console.log('Server running at port 5555'));
