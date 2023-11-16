@@ -4,6 +4,7 @@ import { useEffect, useState, useContext, createContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import App from './App';
+import ErrorPage from './ErrorPage';
 
 
 interface RouteObj {
@@ -34,12 +35,27 @@ function Root() {
   const [routes, setRoutes] = useState(Array<JSX.Element>);
 
   useEffect(() => {
+    // Create routes based on server's content directory structure 
     axios.get(routesURL).then(res => {
-      setRoutes(res.data.map((route: RouteObj, i1: number) => {
-        return (<Route path={Object.keys(route)[0].slice(2)} element={<App />} key={'route'+route}>
+      // Map main routes
+      setRoutes(res.data.map((route: RouteObj) => {
+        return (<Route path={Object.keys(route)[0].slice(2)} element={<App />} key={'route' + route}>
           {Object.values(route).map((subroute: SubRouteObj, i2: number) => {
+            
+            // Map subroutes
             if (Object.values(subroute).length > 0) {
-              return <Route path={Object.keys(subroute)[0].slice(2)} element={<App />} key={'subroute'+subroute}></Route>;
+              return (<Route path={Object.keys(subroute[i2])[0].slice(2)} element={<App />} key={'subroute' + subroute}>
+                {Object.values(subroute[i2]).map((file: string, i3: number) => {
+
+                  // Map files
+                  if (file.length > 0) {
+                    return <Route path={file[i3].slice(2)} element={<App />} key={'fileRoute' + file[i3]} />
+                  }
+                  else {
+                    return null;
+                  }
+                })}
+              </Route>);
             }
             else {
               return null;
@@ -47,14 +63,21 @@ function Root() {
           })}
         </Route>)
       }));
+      // Set data context to be the same directory structure
+      // Mainly used to create get-request URLs to the API
       setData(res.data);
     });
   }, []);
+
+  // useEffect(() => {
+  //   console.log('routes', routes);
+  // }, [routes]);
 
   return (
     <DataContext.Provider value={data}>
       <BrowserRouter>
           <Routes>
+            <Route path='*' element={<ErrorPage />} />
             <Route path='/' element={<App />}>
               {routes}
             </Route>

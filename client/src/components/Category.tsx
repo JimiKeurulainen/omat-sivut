@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import HTMLContent from './HTMLContent';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { handleString } from './Root';
 import Submenu from './Submenu';
 
@@ -26,6 +26,7 @@ export const useStateContext = () => useContext(StateContext);
 
 function Category({element, index}: Props) {
   const navigateURL = useNavigate();
+  const location = useLocation();
 
   const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
@@ -44,7 +45,7 @@ function Category({element, index}: Props) {
             <p>{handleString(Object.keys(project)[0])}</p>
             <div></div>
           </button>
-          <Submenu data={project} index={index1} setActiveHTML={setActiveHTML}></Submenu>
+          <Submenu baseRoute={Object.keys(element)[0]} data={project} index={index1} activeHTML={activeHTML} setActiveHTML={setActiveHTML}></Submenu>
         </div>
       );
     }));
@@ -53,9 +54,10 @@ function Category({element, index}: Props) {
     }));
   }, []);
 
-  useEffect(() => {
-    console.log('activehtml', activeHTML);
-  }, [activeHTML]);
+  // useEffect(() => {
+  //   console.log('activehtml', activeHTML, location.pathname);
+    
+  // }, [activeHTML, location]);
 
   function openSubCategory(project: any, index: number) {
     setSubmenuStates(submenuStates => submenuStates.map((state: boolean, i: number) => {
@@ -98,7 +100,7 @@ function Category({element, index}: Props) {
             <h2>{handleString(Object.keys(element)[0])}</h2>
           </div>
           <div className='TextContainer'>
-            {activeHTML !== '' && <HTMLContent ID={Object.keys(element)[0] + activeHTML}></HTMLContent>}
+            {activeHTML !== '' ? <HTMLContent ID={activeHTML}></HTMLContent> : <div />}
             <div id='TextBG'></div>
           </div>
         </div>

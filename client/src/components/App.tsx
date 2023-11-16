@@ -1,8 +1,8 @@
 import './App.scss';
 import { useEffect, useState, useRef, Ref, useContext, createContext } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import { Link, scroller, animateScroll as scroll } from "react-scroll";
-import { useNavigate } from 'react-router-dom';
+import { Link, Element, scroller, animateScroll as scroll, Events } from "react-scroll";
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import Category from './Category';
@@ -22,6 +22,8 @@ interface CategoryObj {
 function App() {
   const navigateURL = useNavigate();
   const data = useDataContext();
+  const location = useLocation();
+  const params = useParams();
 
   const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
@@ -48,21 +50,15 @@ function App() {
       data.forEach((element: CategoryObj, index: number) => {
         index += 1;
         tempBtns.push(
-          <Link
+          <button
             className='Nappi'
             key={`nappi${index}`}
-            to={`category${index}`}
-            containerId='Lower'
-            isDynamic={true}
-            horizontal={true}
-            smooth={true}
-            duration={500}
             onClick={() => navigate(index, element)}
           >
             <div ref={(el: HTMLDivElement) => categoryRefs.current[index] = el} key={`nappiBG${index}`}></div>
             <FontAwesomeIcon icon={faCaretUp} className='CaretIcon'/>
             <p>{handleString(Object.keys(element)[0])}</p>
-          </Link>
+          </button>
         );
         tempLowers.push(
           <Category index={index} element={element} key={`category${index}`}></Category>
@@ -71,57 +67,66 @@ function App() {
       setButtons(tempBtns);
       setLowers(tempLowers);
       setLoading(true);
-
-      // // Navigate to correct position onload based on URL
-      // const href = window.location.href.split('/')[3];
-      // if (href !== '') {
-      //   setPos(true);
-      //   setActiveElement(tempCategories.indexOf(href) + 1);
-      // }
   }, [data]);
 
   useEffect(() => {
-    if (activeElement !== previousElement.current && pos) {
-      categoryRefs.current[activeElement].classList.add('Active');
-      previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
-
-      scroller.scrollTo(`category${categories.indexOf(window.location.href.split('/')[3]) + 1}`, {
-        duration: 500,
-        containerId: 'Lower',
-        isDynamic: true,
-      });
-    }
-    if (activeElement === 0 && categoryRefs.current[previousElement.current]) {
-      categoryRefs.current[previousElement.current].classList.remove('Active');
-      navigateURL('/');
-    }
-    previousElement.current = activeElement;
-  }, [activeElement]);
-
-  useEffect(() => {
-    if (!pos) {
+    if (location.pathname === '/') {
       scroll.scrollToTop({
         duration: 1000,
         smooth: 'easeInOutQuad',
       });
-      setActiveElement(0);
+      setPos(false);
+      previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
     }
-    if (pos) {
-      scroll.scrollToBottom({
-        duration: 1400,
-        smooth: 'easeInOutQuad',
+    else {
+      const active = categories.indexOf(location.pathname.split('/')[1]) + 1;
+      setPos(true);
+      console.log('lowers', lowers[active - 1], active);
+      lowers[active - 1] && scrollToElem(`category${active}`);
+
+      if (active !== previousElement.current) {
+        categoryRefs.current[active].classList.add('Active');
+        previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
+      }
+      if (active === 0 && categoryRefs.current[previousElement.current]) {
+        categoryRefs.current[previousElement.current].classList.remove('Active');
+      }
+      previousElement.current = active;
+    }
+  }, [location, lowers]);
+
+  function scrollToElem(target: string) {
+    let goToContainer = new Promise<void>((resolve, reject) => {
+      Events.scrollEvent.register('end', () => {
+        resolve();
+        Events.scrollEvent.remove('end');
       });
-    }
-  }, [pos]);
-
-  useEffect(() => {
-    console.log('loading', loading, appRef.current.classList);
-  }, [loading])
-
+      scroller.scrollTo('Lower', {
+        duration: 1000,
+        delay: 0,
+        smooth: true
+      });
+    });
+    goToContainer.then(() =>
+      scroller.scrollTo(target, {
+        duration: 500,
+        delay: 0,
+        smooth: true,
+        containerId: 'Lower',
+        horizontal: true
+      })
+    );
+  }
+ 
   function navigate(index: number, element: CategoryObj) {
-    navigateURL('/' + Object.keys(element)[0].slice(2));
-    setActiveElement(index);
-    previousElement.current === index ? setPos(false) : setPos(true);
+    if (previousElement.current === index) {
+      categoryRefs.current[previousElement.current].classList.remove('Active');
+      previousElement.current = 0;
+      navigateURL('/');
+    }
+    else {
+      navigateURL('/' + Object.keys(element)[0].slice(2));
+    }
   }
 
   return (
@@ -178,11 +183,11 @@ function App() {
           </div>
         </CSSTransition>
 
-        <div id='Lower' className={pos ? 'changeCol' : 'ProjectContainer'}>
+        <Element name='Lower' id='Lower'>
           <div id='LowerContainer' style={{width: `${lowers.length * 100}vw`}}>
             {lowers}
           </div>
-        </div>
+        </Element>
       </div>
     </CSSTransition>
   );

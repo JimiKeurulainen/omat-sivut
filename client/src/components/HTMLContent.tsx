@@ -14,10 +14,8 @@ function HTMLContent(props: Props) {
   const [documentImages, setDocumentImages] = useState(Array<string>);
 
   useEffect(() => {
-    console.log('id', props.ID);
-    axios.get(`${filesURL}/${props.ID}`).then((res: any) => {
-      console.log('res', res);
-      if (res.data.images.length > 0) {
+    axios.get(filesURL + props.ID).then((res: any) => {
+      if (res.data.images && res.data.images.length > 0) {
         setDocumentImages(res.data.images);
       }
       setDocumentData(res.data.data);
@@ -26,7 +24,6 @@ function HTMLContent(props: Props) {
 
   useEffect(() => {
     const images = document.querySelectorAll('.HTMLContent img');
-    console.log('images', images, documentImages);
     documentImages.length > 0 && images[0].setAttribute('src', 'data:image/png;base64,' + documentImages[0]);
   }, [documentData, documentImages]);
 
