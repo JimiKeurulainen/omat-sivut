@@ -1,16 +1,16 @@
 import './App.scss';
-import { useEffect, useState, useRef, Ref, useContext, createContext } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import { Link, Element, scroller, animateScroll as scroll, Events } from "react-scroll";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Element, scroller, animateScroll as scroll, Events } from "react-scroll";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import Category from './Category';
 import { useDataContext, handleString } from './Root';
 import Model from './Model';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { CameraControls, Environment, PerspectiveCamera } from '@react-three/drei';
-import THREE, { BackSide, ShadowMaterial } from 'three';
+import { Canvas } from '@react-three/fiber';
+import { CameraControls, PerspectiveCamera } from '@react-three/drei';
+import { BackSide } from 'three';
 
 
 interface CategoryObj {
@@ -23,13 +23,11 @@ function App() {
   const navigateURL = useNavigate();
   const data = useDataContext();
   const location = useLocation();
-  const params = useParams();
 
   const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
   const [lowers, setLowers] = useState(Array<JSX.Element>);
   const [loading, setLoading] = useState(false);
-  const [activeElement, setActiveElement] = useState(0);
   const [pos, setPos] = useState(false);
   
   const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
@@ -37,6 +35,7 @@ function App() {
   const nodeRef = useRef(null);
   const appRef = useRef<any>(null);
 
+  // Generate components based on data
   useEffect(() => {
       // Add temporary categories that will be used to set states
       const tempBtns: Array<JSX.Element> = [];
@@ -69,21 +68,25 @@ function App() {
       setLoading(true);
   }, [data]);
 
+  // Navigate based on location
   useEffect(() => {
+    // If location corresponds front-page
     if (location.pathname === '/') {
+      setPos(false);
       scroll.scrollToTop({
         duration: 1000,
         smooth: 'easeInOutQuad',
       });
-      setPos(false);
       previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
     }
+    // If location is other than front-page
     else {
-      const active = categories.indexOf(location.pathname.split('/')[1]) + 1;
       setPos(true);
-      console.log('lowers', lowers[active - 1], active);
+      // Get active element based on location
+      const active = categories.indexOf(location.pathname.split('/')[1]) + 1;
+      // Activate scrolling function
       lowers[active - 1] && scrollToElem(`category${active}`);
-
+      // Modify navigation buttons' classes
       if (active !== previousElement.current) {
         categoryRefs.current[active].classList.add('Active');
         previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
@@ -91,6 +94,7 @@ function App() {
       if (active === 0 && categoryRefs.current[previousElement.current]) {
         categoryRefs.current[previousElement.current].classList.remove('Active');
       }
+      // In the end, update the previous element to be the active element
       previousElement.current = active;
     }
   }, [location, lowers]);
@@ -119,6 +123,8 @@ function App() {
   }
  
   function navigate(index: number, element: CategoryObj) {
+    // If the active element is the same as the previous element,
+    // Navigate to the front page
     if (previousElement.current === index) {
       categoryRefs.current[previousElement.current].classList.remove('Active');
       previousElement.current = 0;
