@@ -241,3 +241,13 @@ code {
 .CategoryContainer {
   flex: 1;
 }
+
+// MOBILE VIEW
+@media only screen and (max-width: 600px) {
+  .Navbar {
+    font-size: 14px;
+  }
+  .Navbar-enter-done {
+    height: 10%;
+  }
+}

@@ -5,6 +5,7 @@ import { CSSTransition } from 'react-transition-group';
 import { useStateContext } from './Category';
 import { handleString } from './Root';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 
 
 interface CategoryObj {
@@ -16,13 +17,14 @@ interface Props {
   baseRoute: string,
   data: CategoryObj,
   index: number,
-  activeHTML: string,
+  setMenu: Function,
   setActiveHTML: Function
 }
 
 function Submenu(props: Props) {
   const navigateURL = useNavigate();
   const location = useLocation();
+  const isMobile = useMediaQuery({query: '(max-width: 600px)'});
 
   // const [location, setLocation]
   const [submenu, setSubmenu] = useState(Array<JSX.Element>);
@@ -51,6 +53,7 @@ function Submenu(props: Props) {
   function navigate(project: string) {
     props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${project}`);
     navigateURL(`${props.baseRoute.slice(2)}/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
+    isMobile && props.setMenu(false);
   }
 
   return (

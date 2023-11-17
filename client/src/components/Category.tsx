@@ -9,6 +9,7 @@ import HTMLContent from './HTMLContent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { handleString } from './Root';
 import Submenu from './Submenu';
+import { useMediaQuery } from 'react-responsive';
 
 
 interface CategoryObj {
@@ -27,6 +28,7 @@ export const useStateContext = () => useContext(StateContext);
 function Category({element, index}: Props) {
   const navigateURL = useNavigate();
   const location = useLocation();
+  const isMobile = useMediaQuery({query: '(max-width: 600px)'});
 
   const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
@@ -46,7 +48,7 @@ function Category({element, index}: Props) {
             <p>{handleString(Object.keys(project)[0])}</p>
             <div></div>
           </button>
-          <Submenu baseRoute={Object.keys(element)[0]} data={project} index={index1} activeHTML={activeHTML} setActiveHTML={setActiveHTML}></Submenu>
+          <Submenu baseRoute={Object.keys(element)[0]} data={project} index={index1} setMenu={setMenuPos} setActiveHTML={setActiveHTML}></Submenu>
         </div>
       );
     }));
@@ -84,7 +86,7 @@ function Category({element, index}: Props) {
           <CSSTransition
             nodeRef={menuRef}
             in={menuPos}
-            timeout={0}
+            timeout={isMobile ? 200 : 0}
             classNames="Menu"
           >
             <div ref={menuRef} className='Menu'>
