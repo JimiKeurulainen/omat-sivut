@@ -11,6 +11,7 @@ import Model from './Model';
 import { Canvas } from '@react-three/fiber';
 import { CameraControls, PerspectiveCamera } from '@react-three/drei';
 import { BackSide } from 'three';
+import { useMediaQuery } from 'react-responsive';
 
 
 interface CategoryObj {
@@ -24,6 +25,7 @@ function App() {
   const navigateURL = useNavigate();
   const data = useDataContext();
   const location = useLocation();
+  const isMobile = useMediaQuery({query: '(max-width: 600px)'});
 
   const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
@@ -46,7 +48,6 @@ function App() {
       setCategories(data.map((category) => {
         return Object.keys(category)[0].slice(2)
       }));
-
       data.forEach((element: CategoryObj, index: number) => {
         index += 1;
         tempBtns.push(
@@ -67,6 +68,13 @@ function App() {
       setButtons(tempBtns);
       setLowers(tempLowers);
       setLoading(true);
+
+      // Navbar offset in mobile view
+      if (isMobile) {
+        const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
+        console.log('offset', elemRect?.top);
+        document.documentElement.style.setProperty('--offset', `${elemRect?.top}px`);
+      }
   }, [data]);
 
   // Navigate based on location
@@ -79,6 +87,8 @@ function App() {
         smooth: 'easeInOutQuad',
       });
       previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
+      // Remove resize event listener, if user is scrolled to upper
+      // window.removeEventListener('resize', () => {});
     }
     // If location is other than front-page
     else {
@@ -97,6 +107,21 @@ function App() {
       }
       // In the end, update the previous element to be the active element
       previousElement.current = active;
+
+      // Add event listener that will scroll to right position,
+      //  if screen size is changed and user is scrolled to lower
+      window.addEventListener('resize', (event) => {
+        scroller.scrollTo(`category${active}`, {
+          duration: 500,
+          delay: 0,
+          smooth: true,
+          containerId: 'Lower',
+          horizontal: true
+        });
+        let appHeight = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--appHeight', `${appHeight}px`);
+        console.log('innerheight', window.innerHeight, document.documentElement.style.getPropertyValue('--appHeight'));
+      });
     }
   }, [location, lowers]);
 

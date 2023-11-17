@@ -1,3 +1,9 @@
+// VARIABLES
+:root {
+  --appHeight: 0px;
+  --offset: 0px;
+}
+
 // CLASSES AND IDS
 body {
   margin: 0;
@@ -17,7 +23,7 @@ code {
 }
 .App {
   width: 100vw;
-  height: 200vh;
+  height: calc(var(--appHeight, 1vh) * 200);
   opacity: 0;
 
   #Upper {
@@ -244,9 +250,6 @@ code {
 
 // MOBILE VIEW
 @media only screen and (max-width: 600px) {
-  .App {
-    height: 100%;
-  }
   #Upper {
     header {
       justify-content: center;
@@ -258,5 +261,6 @@ code {
   }
   .Navbar-enter-done {
     height: 10%;
+    top: var(--offset);
   }
 }
