@@ -1,6 +1,7 @@
 import './HTMLContent.scss';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { sanitize } from 'dompurify';
 
 
 interface Props {
@@ -14,11 +15,13 @@ function HTMLContent(props: Props) {
   const [documentImages, setDocumentImages] = useState(Array<string>);
 
   useEffect(() => {
+    // Get HTML file from server
     props.ID && axios.get(filesURL + '/' + props.ID).then((res: any) => {
       if (res.data.images && res.data.images.length > 0) {
         setDocumentImages(res.data.images);
       }
-      setDocumentData(res.data.data);
+      // Sanitize html and set document data
+      setDocumentData(sanitize(res.data.data));
     });
   }, [props]);
 
