@@ -244,6 +244,15 @@ code {
 
 // MOBILE VIEW
 @media only screen and (max-width: 600px) {
+  .App {
+    height: 100%;
+  }
+  #Upper {
+    header {
+      justify-content: center;
+      padding-left: 0px;
+    }
+  }
   .Navbar {
     font-size: 14px;
   }
