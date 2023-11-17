@@ -14,9 +14,10 @@ import { BackSide } from 'three';
 
 
 interface CategoryObj {
-  [key: string]: {
-    [key: string]: Array<string>
-  }
+  [key: string]: Array<SubCategoryObj>
+}
+interface SubCategoryObj {
+  [key: string]: Array<string>
 }
 
 function App() {

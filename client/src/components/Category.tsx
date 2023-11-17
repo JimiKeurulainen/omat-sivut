@@ -32,6 +32,7 @@ function Category({element, index}: Props) {
   const [menuPos, setMenuPos] = useState(false);
   const [submenuStates, setSubmenuStates] = useState(Array<boolean>);
   const [activeHTML, setActiveHTML] = useState('');
+  const [activeComp, setActiveComp] = useState<JSX.Element | null>(null);
   
   const submenuRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -54,10 +55,9 @@ function Category({element, index}: Props) {
     }));
   }, []);
 
-  // useEffect(() => {
-  //   console.log('activehtml', activeHTML, location.pathname);
-    
-  // }, [activeHTML, location]);
+  useEffect(() => {
+    setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)
+  }, [activeHTML]);
 
   function openSubCategory(project: any, index: number) {
     setSubmenuStates(submenuStates => submenuStates.map((state: boolean, i: number) => {
@@ -100,7 +100,7 @@ function Category({element, index}: Props) {
             <h2>{handleString(Object.keys(element)[0])}</h2>
           </div>
           <div className='TextContainer'>
-            {activeHTML !== '' ? <HTMLContent ID={activeHTML}></HTMLContent> : <div />}
+            {activeHTML !== '' && activeComp}
             <div id='TextBG'></div>
           </div>
         </div>

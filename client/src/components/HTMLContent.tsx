@@ -14,13 +14,13 @@ function HTMLContent(props: Props) {
   const [documentImages, setDocumentImages] = useState(Array<string>);
 
   useEffect(() => {
-    axios.get(filesURL + props.ID).then((res: any) => {
+    props.ID && axios.get(filesURL + '/' + props.ID).then((res: any) => {
       if (res.data.images && res.data.images.length > 0) {
         setDocumentImages(res.data.images);
       }
       setDocumentData(res.data.data);
     });
-  }, []);
+  }, [props]);
 
   useEffect(() => {
     const images = document.querySelectorAll('.HTMLContent img');

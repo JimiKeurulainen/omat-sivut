@@ -49,7 +49,6 @@ function Submenu(props: Props) {
   }, [submenu]);
 
   function navigate(project: string) {
-    // console.log('locatioin', location, `/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
     props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${project}`);
     navigateURL(`${props.baseRoute.slice(2)}/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
   }

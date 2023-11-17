@@ -8,9 +8,7 @@ import ErrorPage from './ErrorPage';
 
 
 interface RouteObj {
-  [key: string]: {
-    [key: string]: Array<string>
-  }
+  [key: string]: Array<SubRouteObj>
 }
 interface SubRouteObj {
   [key: string]: Array<string>
@@ -25,7 +23,7 @@ export function handleString(string: any) {
   return capitalized.replace(/_/g, ' ');
 }
 
-const DataContext = createContext<Array<RouteObj>>([{default: {default1: ['default']}}]);
+const DataContext = createContext<Array<RouteObj>>([{default: [{default1: ['default']}]}]);
 export const useDataContext = () => useContext(DataContext);
 
 function Root() {
@@ -37,23 +35,19 @@ function Root() {
   useEffect(() => {
     // Create routes based on server's content directory structure 
     axios.get(routesURL).then(res => {
+
       // Map main routes
       setRoutes(res.data.map((route: RouteObj) => {
         return (<Route path={Object.keys(route)[0].slice(2)} element={<App />} key={'route' + route}>
-          {Object.values(route).map((subroute: SubRouteObj, i2: number) => {
+          {Object.values(route)[0].length > 0 && Object.values(route)[0].map((subroute: SubRouteObj) => {
             
             // Map subroutes
-            if (Object.values(subroute).length > 0) {
-              return (<Route path={Object.keys(subroute[i2])[0].slice(2)} element={<App />} key={'subroute' + subroute}>
-                {Object.values(subroute[i2]).map((file: string, i3: number) => {
+            if (Object.values(subroute)) {
+              return (<Route path={Object.keys(subroute)[0].slice(2)} element={<App />} key={'subroute' + subroute}>
+                {Object.values(subroute)[0].length > 0 && Object.values(subroute)[0].map((file: string) => {
 
                   // Map files
-                  if (file.length > 0) {
-                    return <Route path={file[i3].slice(2)} element={<App />} key={'fileRoute' + file[i3]} />
-                  }
-                  else {
-                    return null;
-                  }
+                  return <Route path={file.slice(2)} element={<App />} key={'fileRoute' + file} />
                 })}
               </Route>);
             }
@@ -68,10 +62,6 @@ function Root() {
       setData(res.data);
     });
   }, []);
-
-  // useEffect(() => {
-  //   console.log('routes', routes);
-  // }, [routes]);
 
   return (
     <DataContext.Provider value={data}>
