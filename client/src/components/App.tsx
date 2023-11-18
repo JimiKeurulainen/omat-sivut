@@ -33,7 +33,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [pos, setPos] = useState(false);
   
-  const categoryRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
+  const categoryRefs = useRef<Array<HTMLButtonElement>>(new Array<HTMLButtonElement>);
   const previousElement = useRef<number>(0);
   const nodeRef = useRef(null);
   const appRef = useRef<any>(null);
@@ -55,9 +55,11 @@ function App() {
             className='Nappi'
             key={`nappi${index}`}
             onClick={() => navigate(index, element)}
+            ref={(el: HTMLButtonElement) => categoryRefs.current[index] = el}
           >
-            <div ref={(el: HTMLDivElement) => categoryRefs.current[index] = el} key={`nappiBG${index}`}></div>
+            <div key={`nappiBG${index}`}></div>
             <FontAwesomeIcon icon={faCaretUp} className='CaretIcon'/>
+            <p className='Etusivulle'>Etusivulle</p>
             <p>{handleString(Object.keys(element)[0])}</p>
           </button>
         );
@@ -69,6 +71,7 @@ function App() {
       setLowers(tempLowers);
       setLoading(true);
 
+      console.log(categoryRefs);
       // Navbar offset in mobile view
       if (isMobile) {
         const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
@@ -100,9 +103,12 @@ function App() {
       // Modify navigation buttons' classes
       if (active !== previousElement.current) {
         categoryRefs.current[active].classList.add('Active');
+        // If viewed with mobile device, make 'to front page' (etusivulle) text visible without on hover
+        isMobile && document.documentElement.style.setProperty('--mobileOpacity', '1');
         previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
       }
       if (active === 0 && categoryRefs.current[previousElement.current]) {
+        isMobile && document.documentElement.style.setProperty('--mobileOpacity', '0');
         categoryRefs.current[previousElement.current].classList.remove('Active');
       }
       // In the end, update the previous element to be the active element

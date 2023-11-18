@@ -78,10 +78,14 @@ function Category({element, index}: Props) {
     }));
   }
 
+  function onscroll(event: any) {
+    console.log('scroll', event);
+  }
+
   return (
     <StateContext.Provider value={submenuStates}>
       <Element name={`category${index}`} className='CategoryContainer'>
-        <div className='Category'>
+        <div className='Category' onScroll={(e) => onscroll(e)}>
           {categories.length !== 0 &&
           <CSSTransition
             nodeRef={menuRef}

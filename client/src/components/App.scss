@@ -2,6 +2,7 @@
 :root {
   --appHeight: 0px;
   --offset: 0px;
+  --mobileOpacity: 0;
 }
 
 // CLASSES AND IDS
@@ -121,8 +122,12 @@ code {
       transition: all 0.3s;
     }
     p {
+      position: absolute;
       transition: all 0.2s;
       background-color: rgba(0, 0, 0, 0);
+    }
+    .Etusivulle {
+      opacity: 0;
     }
     div {
       height: 100%;
@@ -179,16 +184,43 @@ code {
       transform: rotateX(0deg);
       transform: translateY(0%);
     }
-    .Active, .Active ~ .CaretIcon {
-      opacity: 1;
-    }
-    .Active ~ p {
-      transform: translateY(0.6vh);
-    }
   }
   .Nappi:hover {
     p {
       transform: translateY(0.6vh);
+    }
+  }
+  .Active {
+    .CaretIcon {
+      opacity: 1;
+    }
+    p {
+      transform: translateY(0.6vh);
+      @if var(--mobileOpacity) {
+        opacity: 0;
+      }
+    }
+    .Etusivulle {
+      opacity: var(--mobileOpacity);
+    }
+    div {
+      opacity: 1;
+    }
+    // .Active:hover ~ .Etusivulle, .Active ~ .Etusivulle:hover, .Active ~ p:hover ~ .Etusivulle {
+    //   opacity: 1;
+    //   transition: opacity transform 0.5s;
+    //   z-index: 3;
+    // }
+  }
+  .Active:hover {
+    p {
+      opacity: 0;
+      transition: all 0.5s;
+    }
+    .Etusivulle {
+      opacity: 1;
+      transform: translateY(1vh);
+      transition: all 0.5s;
     }
   }
 }
