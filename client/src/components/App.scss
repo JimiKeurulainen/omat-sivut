@@ -196,7 +196,7 @@ code {
     }
     p {
       transform: translateY(0.6vh);
-      @if var(--mobileOpacity) {
+      @if (var(--mobileOpacity) == 1) {
         opacity: 0;
       }
     }
@@ -206,11 +206,6 @@ code {
     div {
       opacity: 1;
     }
-    // .Active:hover ~ .Etusivulle, .Active ~ .Etusivulle:hover, .Active ~ p:hover ~ .Etusivulle {
-    //   opacity: 1;
-    //   transition: opacity transform 0.5s;
-    //   z-index: 3;
-    // }
   }
   .Active:hover {
     p {
