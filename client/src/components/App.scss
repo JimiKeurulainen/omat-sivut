@@ -26,39 +26,13 @@ code {
   width: 100vw;
   height: calc(var(--appHeight, 1vh) * 200);
   opacity: 0;
-
-  #Upper {
-    Canvas {
-      opacity: 0; 
-    }
-  }
 }
 .App-enter {
   opacity: 0;
-
-  #Upper {
-    Canvas {
-      opacity: 0;
-    }
-  }
-}
-.App-enter-active {
-  #Upper {
-    Canvas {
-      opacity: 0; 
-    }
-  }
 }
 .App-enter-done {
   opacity: 1;
   transition: all 3s;
-
-  #Upper {
-    Canvas {
-      transition: all 3s;
-      opacity: 1;
-    }
-  }
 }
 #Upper {
   width: 100%;
@@ -66,8 +40,8 @@ code {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  background-color: black;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0);
   animation: changeCol 1s reverse;
 
   header {

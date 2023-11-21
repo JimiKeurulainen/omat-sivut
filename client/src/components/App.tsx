@@ -71,7 +71,6 @@ function App() {
       setLowers(tempLowers);
       setLoading(true);
 
-      console.log(categoryRefs);
       // Navbar offset in mobile view
       if (isMobile) {
         const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
@@ -177,36 +176,7 @@ function App() {
       <div className='App' ref={appRef}>  
         <div id='Upper'>
           <header>Jimi Keurulainen</header>
-          <Canvas shadows>
-            <fog attach="fog" args={['black', 0, 40]} />
-            <CameraControls minPolarAngle={0} maxPolarAngle={Math.PI / 1.6} />
-            <ambientLight />
-            <directionalLight 
-              position={[10, 5, 0]} 
-              color='rgb(49, 123, 173)' 
-              intensity={20} 
-              castShadow
-            >
-              <orthographicCamera attach="shadow-camera" args={[-10, 10, -10, 10, 0.1, 50]} />
-            </directionalLight>
-            <directionalLight position={[-10, 5, 10]} color='white' intensity={0.5} castShadow/>
-            <directionalLight position={[-5, 1, -7]} color='rgb(200, 200, 240)' intensity={10} castShadow/>
-
-            <Model position={[0, 0, 2]} />
-
-            <mesh rotation={[Math.PI / -2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
-              <planeGeometry args={[300, 300]} />
-              <shadowMaterial transparent opacity={0.4} />
-              <meshStandardMaterial color={'grey'} roughness={0.2} metalness={0.9}/>
-            </mesh>
-
-            <mesh rotation={[Math.PI / -2, 0, 0]}>
-              <sphereGeometry args={[150, 32, 16]} />
-              <meshStandardMaterial color={'black'} roughness={1} metalness={0} side={BackSide}/>
-            </mesh>
-
-            <PerspectiveCamera makeDefault position={[3, 0.5, 4]} />
-          </Canvas>
+          <Model position={[0, 0, 2]} ID='sportscar' />
         </div>
 
         <CSSTransition
