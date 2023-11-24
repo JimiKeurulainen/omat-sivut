@@ -5,13 +5,12 @@ import { Element, scroller, animateScroll as scroll, Events } from "react-scroll
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import Category from './Category';
-import { useDataContext, handleString } from './Root';
-import Model from './Model';
-import { Canvas } from '@react-three/fiber';
-import { CameraControls, PerspectiveCamera } from '@react-three/drei';
-import { BackSide } from 'three';
 import { useMediaQuery } from 'react-responsive';
+import { useDataContext, handleString } from './Root';
+
+import Category from './Category';
+import Model from './Model';
+import Header from './Header';
 
 
 interface CategoryObj {
@@ -89,8 +88,6 @@ function App() {
         smooth: 'easeInOutQuad',
       });
       previousElement.current !== 0 && categoryRefs.current[previousElement.current].classList.remove('Active');
-      // Remove resize event listener, if user is scrolled to upper
-      // window.removeEventListener('resize', () => {});
     }
     // If location is other than front-page
     else {
@@ -175,7 +172,7 @@ function App() {
     >
       <div className='App' ref={appRef}>  
         <div id='Upper'>
-          <header>Jimi Keurulainen</header>
+          <Header />
           <Model position={[0, 0, 2]} ID='sportscar' />
         </div>
 
