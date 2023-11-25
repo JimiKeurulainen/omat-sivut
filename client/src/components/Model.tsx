@@ -4,24 +4,41 @@ import { CameraControls, Gltf, Html, PerspectiveCamera, useGLTF, useProgress } f
 import { WireframeMaterial } from '@react-three/drei/materials/WireframeMaterial';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import { Canvas, extend } from '@react-three/fiber';
 import { BackSide } from 'three';
+import { handleString } from './Root';
 extend({Canvas});
+
+interface ModelInfo {
+  "1_nimi": string,
+  "2_tekijä": string,
+  "3_tahkojen_määrä": number,
+  "4_kuvaus": string,
+}
 
 
 function Model(props: any) {
   const modelURL = process.env.REACT_APP_MODELS ? process.env.REACT_APP_MODELS : 'no env variable';
+  const modelInfoURL = process.env.REACT_APP_MODELSINFO ? process.env.REACT_APP_MODELSINFO : 'no env variable';
   
-  const ref = useRef<any>(null);
+  const meshRef = useRef<any>(null);
   const canvasRef = useRef<any>(null);
+  const detailsRef = useRef<any>(null);
   const loadingRef = useRef<any>(null);
   
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
+  const [showDetails, setShowDetails] = useState(false);
   const [progress, setProgress] = useState(0);
   const [modelData, setModelData] = useState('');
+  const [modelInfo, setModelInfo] = useState<ModelInfo>({
+    "1_nimi": '',
+    "2_tekijä": '',
+    "3_tahkojen_määrä": 0,
+    "4_kuvaus": '',
+  });
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -38,8 +55,13 @@ function Model(props: any) {
       // If component gets unmounted, cancel stream request
       }, cancelToken: cancelTokenSource.token,
       
-      // When stream ends, create object url to put into Gltf object's source
       }).then(res => {
+        // Separate request to get model data as a JSON
+        // Used to calculate model polygon count
+        axios.get(modelInfoURL + props.ID).then(info => {
+          setModelInfo(info.data);
+        })
+        // When stream ends, create object url to put into Gltf object's source
         const url = window.URL.createObjectURL(new Blob([res.data], {type: 'model/gltf-binary'}));
         setModelData(url);
       // Log and error if model get request is cancelled
@@ -54,6 +76,30 @@ function Model(props: any) {
     };
   }, []);
 
+  useEffect(() => {
+    let pointCount: number = 0;
+
+    // Loop through mesh children to calculate total polygon count
+    const loop = (children: any) => {
+      if (children.length > 0) {
+        children.forEach((child: any) => {
+          if (Object.keys(child).includes('children')) {
+            if (child.children.length > 0) {
+              loop(child.children);
+            }
+            else {
+              pointCount += child.geometry.index.count;
+            }
+          }
+        });
+      }
+    }
+    meshRef.current && loop(meshRef.current.children);
+
+    // Split amount of points by 3 to get amount of triangles
+    setModelInfo({...modelInfo, "3_tahkojen_määrä": pointCount / 3});
+  }, [loaded]);
+
   function Initializer() {
     const { progress } = useProgress();
     // when Gltf-component finishes loading, set Canvas CSSTransition parameter to true
@@ -62,13 +108,29 @@ function Model(props: any) {
       <Html className='Loading' ref={loadingRef}>
         <FontAwesomeIcon icon={faSpinner} className='Spinner' />
         <h2>{progress} %</h2>
-        <p>Initializing "{props.ID}"</p>
+        <p>Alustetaan "{props.ID}"</p>
       </Html>
     )
   }
 
   return (
     <div className='UpperContainer'>
+      <CSSTransition
+      nodeRef={detailsRef}
+      in={showDetails}
+      timeout={0}
+      classNames='ModelDetails'
+      >
+        <div className='ModelDetails' ref={detailsRef}>
+          <FontAwesomeIcon icon={faInfoCircle} onClick={() => setShowDetails(showDetails => !showDetails)} />
+          <article>
+            <h3>Mallin tiedot:</h3>
+            {Object.keys(modelInfo).map((key: string, index: number) => {
+              return <p><span>{handleString(key)}:</span><span>{Object.values(modelInfo)[index]}</span></p>
+            })}
+          </article>
+        </div>
+      </CSSTransition>
       {modelData !== '' ?
       <CSSTransition
         nodeRef={canvasRef}
@@ -77,7 +139,7 @@ function Model(props: any) {
         classNames='Canvas'
       >
         <div ref={canvasRef} className='Canvas'>
-          <Canvas shadows>
+          <Canvas shadows frameloop='demand'>
             <Suspense fallback={<Initializer />}>
               <fog attach="fog" args={['black', 0, 40]} />
               <CameraControls minPolarAngle={0} maxPolarAngle={Math.PI / 1.6} />
@@ -94,9 +156,9 @@ function Model(props: any) {
               <directionalLight position={[-5, 1, -7]} color='rgb(200, 200, 240)' intensity={10} castShadow/>
               <mesh
               {...props}
-              ref={ref}
+              ref={meshRef}
               receiveShadow
-              >
+              > 
                 {modelData !== '' && <Gltf src={modelData} castShadow></Gltf>}
               </mesh>
               <mesh rotation={[Math.PI / -2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
@@ -123,7 +185,7 @@ function Model(props: any) {
         <div className='Loading' ref={loadingRef}>
           <FontAwesomeIcon icon={faSpinner} className='Spinner' />
           <h2>{progress} %</h2>
-          <p>Loading model "{props.ID}"</p>
+          <p>Ladataan mallia "{props.ID}"</p>
         </div>
       </CSSTransition>
       }

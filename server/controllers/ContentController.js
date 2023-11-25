@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { readFileSync } from "fs";
 import path from "path";
 
 
@@ -52,21 +52,28 @@ export const getFile = async (req, res) => {
 }
 
 export const getModel = async (req, res) => {
-    const url = path.join('/var/www/jimikeurulainen/content/models/', `${req.params.model}.glb`);
+    const modelUrl = path.join('/var/www/jimikeurulainen/content/models/', `${req.params.model}.glb`);
 
     try {
-		const modelSize = fs.statSync(url).size;
-		const modelStream = fs.createReadStream(url, { highWaterMark: 1024 * 1024 });
-        // modelStream.on('data', (chunk) => {
-        //     console.log('chunk', chunk);
-        // });
-        // modelStream.on('end', () => {
-        //     console.log('end data');
-        // });
+		const modelSize = fs.statSync(modelUrl).size;
+		const modelStream = fs.createReadStream(modelUrl, { highWaterMark: 1024 * 1024 });
+
         res.setHeader('Content-Type', 'model/gltf-binary');
         res.setHeader('Content-Disposition', `inline; filename=${req.params.model}.glb`);
         res.setHeader('Content-length', modelSize);
+        
         modelStream.pipe(res);
+    } catch (error) {
+        res.json({ message: error.message });
+    }   
+}
+
+export const getModelInfo = async (req, res) => {
+    const infoUrl = path.join('/var/www/jimikeurulainen/content/models/', `${req.params.model}.json`);
+
+    try {
+		const info = fs.readFileSync(infoUrl);
+        res.send(info);
     } catch (error) {
         res.json({ message: error.message });
     }   
