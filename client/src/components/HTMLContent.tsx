@@ -2,6 +2,7 @@ import './HTMLContent.scss';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { sanitize } from 'dompurify';
+import { useLanguageContext } from './Root';
 
 
 interface Props {
@@ -9,7 +10,13 @@ interface Props {
 }
 
 function HTMLContent(props: Props) {
-  const filesURL = process.env.REACT_APP_FILES ? process.env.REACT_APP_FILES : 'no env variable';
+  let filesURL = 'no env route';
+  if (language === 'FI') {
+    filesURL = process.env.REACT_APP_ROUTES_FI ? process.env.REACT_APP_ROUTES_FI : 'null';
+  }
+  if (language === 'EN') {
+    filesURL = process.env.REACT_APP_ROUTES_EN ? process.env.REACT_APP_ROUTES_EN : 'null';
+  }
 
   const [documentData, setDocumentData] = useState('');
   const [documentImages, setDocumentImages] = useState(Array<string>);

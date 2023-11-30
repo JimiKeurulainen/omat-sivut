@@ -14,6 +14,11 @@ interface SubRouteObj {
   [key: string]: Array<string>
 }
 
+interface LanguageObj {
+  language: string,
+  setLanguage: Function
+}
+
 export function handleString(string: any) {
   // Check string attribute data type and slice the order prefix
   const str = typeof string !== 'string' ? Object.keys(string)[0].slice(2) : string.slice(2);
@@ -26,13 +31,23 @@ export function handleString(string: any) {
 const DataContext = createContext<Array<RouteObj>>([{default: [{default1: ['default']}]}]);
 export const useDataContext = () => useContext(DataContext);
 
-function Root() {
-  const routesURL = process.env.REACT_APP_ROUTES ? process.env.REACT_APP_ROUTES : 'no env variable';
-  
+const LanguageContext = createContext<LanguageObj>({language: 'FI', setLanguage() {}});
+export const useLanguageContext = () => useContext(LanguageContext);
+
+function Root() {  
   const [data, setData] = useState(Array<RouteObj>);
+  const [language, setLanguage] = useState<string>('FI');
   const [routes, setRoutes] = useState(Array<JSX.Element>);
 
   useEffect(() => {
+    let routesURL = 'no env route';
+    if (language === 'FI') {
+      routesURL = process.env.REACT_APP_ROUTES_FI ? process.env.REACT_APP_ROUTES_FI : 'null';
+    }
+    if (language === 'EN') {
+      routesURL = process.env.REACT_APP_ROUTES_EN ? process.env.REACT_APP_ROUTES_EN : 'null';
+    }
+
     // Create routes based on server's content directory structure 
     axios.get(routesURL).then(res => {
 
@@ -61,9 +76,10 @@ function Root() {
       // Mainly used to create get-request URLs to the API
       setData(res.data);
     });
-  }, []);
+  }, [language]);
 
   return (
+    <LanguageContext.Provider value={{language, setLanguage}}>
     <DataContext.Provider value={data}>
       <BrowserRouter>
           <Routes>
@@ -74,6 +90,7 @@ function Root() {
           </Routes>
       </BrowserRouter>
     </DataContext.Provider>
+    </LanguageContext.Provider>
   )
 }
 
