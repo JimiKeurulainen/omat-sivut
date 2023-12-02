@@ -11,11 +11,13 @@ interface Props {
 
 function HTMLContent(props: Props) {
   let filesURL = 'no env route';
+  const {language, setLanguage} = useLanguageContext();
+
   if (language === 'FI') {
-    filesURL = process.env.REACT_APP_ROUTES_FI ? process.env.REACT_APP_ROUTES_FI : 'null';
+    filesURL = process.env.REACT_APP_FILES_FI ? process.env.REACT_APP_FILES_FI : 'null';
   }
   if (language === 'EN') {
-    filesURL = process.env.REACT_APP_ROUTES_EN ? process.env.REACT_APP_ROUTES_EN : 'null';
+    filesURL = process.env.REACT_APP_FILES_EN ? process.env.REACT_APP_FILES_EN : 'null';
   }
 
   const [documentData, setDocumentData] = useState('');
@@ -23,7 +25,7 @@ function HTMLContent(props: Props) {
 
   useEffect(() => {
     // Get HTML file from server
-    props.ID && axios.get(filesURL + '/' + props.ID).then((res: any) => {
+    props.ID && axios.get(filesURL + props.ID).then((res: any) => {
       if (res.data.images && res.data.images.length > 0) {
         setDocumentImages(res.data.images);
       }

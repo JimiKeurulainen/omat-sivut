@@ -173,7 +173,7 @@ function App() {
       <div className='App' ref={appRef}>  
         <div id='Upper'> 
           <Header />
-          <Model position={[0, 0, 2]} ID='sportscar' key='model1' />
+          <Model position={[0, 0, 2]} ID='sportscar' />
         </div>
 
         <CSSTransition
