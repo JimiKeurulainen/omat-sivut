@@ -3,7 +3,7 @@ import './Submenu.scss';
 import { useEffect, useState, useRef, useContext } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useStateContext } from './Category';
-import { handleString } from './Root';
+import { handleString, useLanguageContext } from './Root';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 
@@ -25,6 +25,7 @@ function Submenu(props: Props) {
   const navigateURL = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
+  const {language, setLanguage} = useLanguageContext();
 
   // const [location, setLocation]
   const [submenu, setSubmenu] = useState(Array<JSX.Element>);
@@ -51,8 +52,9 @@ function Submenu(props: Props) {
   }, [submenu]);
 
   function navigate(project: string) {
+    console.log('baseroute', props.baseRoute);
     props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${project}`);
-    navigateURL(`${props.baseRoute.slice(2)}/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
+    navigateURL(`${language}/${props.baseRoute.slice(2)}/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
     isMobile && props.setMenu(false);
   }
 

@@ -5,7 +5,7 @@ import {
 
 const router = express.Router();
  
-router.get('/routes/:language', getRoutes);
+router.get('/routes', getRoutes);
 router.get('/:language/:category/:subcategory/:file', getFile);
 router.get('/models/:model', getModel);
 router.get('/modelsInfo/:model', getModelInfo);

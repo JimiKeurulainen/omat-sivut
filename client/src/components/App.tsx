@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { useMediaQuery } from 'react-responsive';
-import { useDataContext, handleString } from './Root';
+import { useDataContext, handleString, useLanguageContext } from './Root';
 
 import Category from './Category';
 import Model from './Model';
@@ -25,6 +25,7 @@ function App() {
   const data = useDataContext();
   const location = useLocation();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
+  const {language, setLanguage} = useLanguageContext();
 
   const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
@@ -39,49 +40,50 @@ function App() {
 
   // Generate components based on data
   useEffect(() => {
-      // Add temporary categories that will be used to set states
-      const tempBtns: Array<JSX.Element> = [];
-      const tempLowers: Array<JSX.Element> = [];
-      
-      // Loop through the response and add items to temporary arrays accordingly
-      setCategories(data.map((category) => {
-        return Object.keys(category)[0].slice(2)
-      }));
-      data.forEach((element: CategoryObj, index: number) => {
-        index += 1;
-        tempBtns.push(
-          <button
-            className='Nappi'
-            key={`nappi${index}`}
-            onClick={() => navigate(index, element)}
-            ref={(el: HTMLButtonElement) => categoryRefs.current[index] = el}
-          >
-            <div key={`nappiBG${index}`}></div>
-            <FontAwesomeIcon icon={faCaretUp} className='CaretIcon'/>
-            <p className='Etusivulle'>Etusivulle</p>
-            <p>{handleString(Object.keys(element)[0])}</p>
-          </button>
-        );
-        tempLowers.push(
-          <Category index={index} element={element} key={`category${index}`}></Category>
-        );
-      });
-      setButtons(tempBtns);
-      setLowers(tempLowers);
-      setLoading(true);
+    // navigateURL('/FI');
+    // Add temporary categories that will be used to set states
+    const tempBtns: Array<JSX.Element> = [];
+    const tempLowers: Array<JSX.Element> = [];
+    
+    // Loop through the response and add items to temporary arrays accordingly
+    setCategories(data.map((category) => {
+      return Object.keys(category)[0].slice(2)
+    }));
 
-      // Navbar offset in mobile view
-      if (isMobile) {
-        const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
-        console.log('offset', elemRect?.top);
-        document.documentElement.style.setProperty('--offset', `${elemRect?.top}px`);
-      }
+    data.forEach((element: CategoryObj, index: number) => {
+      index += 1;
+      tempBtns.push(
+        <button
+          className='Nappi'
+          key={`nappi${index}`}
+          onClick={() => navigate(index, element)}
+          ref={(el: HTMLButtonElement) => categoryRefs.current[index] = el}
+        >
+          <div key={`nappiBG${index}`}></div>
+          <FontAwesomeIcon icon={faCaretUp} className='CaretIcon'/>
+          <p className='Etusivulle'>{language === 'FI' ? 'Etusivulle' : 'To home page'}</p>
+          <p>{handleString(Object.keys(element)[0])}</p>
+        </button>
+      );
+      tempLowers.push(
+        <Category index={index} element={element} key={`category${index}`}></Category>
+      );
+    });
+    setButtons(tempBtns);
+    setLowers(tempLowers);
+    setLoading(true);
+
+    // Navbar offset in mobile view
+    if (isMobile) {
+      const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
+      document.documentElement.style.setProperty('--offset', `${elemRect?.top}px`);
+    }
   }, [data]);
 
   // Navigate based on location
   useEffect(() => {
     // If location corresponds front-page
-    if (location.pathname === '/') {
+    if (location.pathname === '/' + language) {
       setPos(false);
       scroll.scrollToTop({
         duration: 1000,
@@ -93,7 +95,8 @@ function App() {
     else {
       setPos(true);
       // Get active element based on location
-      const active = categories.indexOf(location.pathname.split('/')[1]) + 1;
+      const active = categories.indexOf(location.pathname.split('/')[2]) + 1;
+
       // Activate scrolling function
       lowers[active - 1] && scrollToElem(`category${active}`);
       // Modify navigation buttons' classes
@@ -156,10 +159,10 @@ function App() {
     if (previousElement.current === index) {
       categoryRefs.current[previousElement.current].classList.remove('Active');
       previousElement.current = 0;
-      navigateURL('/');
+      navigateURL('/' + language);
     }
     else {
-      navigateURL('/' + Object.keys(element)[0].slice(2));
+      navigateURL('/' + language + '/' + Object.keys(element)[0].slice(2));
     }
   }
 

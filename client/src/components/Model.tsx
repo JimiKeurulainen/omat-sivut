@@ -126,7 +126,7 @@ function Model(props: any) {
           <article>
             <h3>Mallin tiedot:</h3>
             {Object.keys(modelInfo).map((key: string, index: number) => {
-              return <p><span>{handleString(key)}:</span><span>{Object.values(modelInfo)[index]}</span></p>
+              return <p key={`infoBit${index}`}><span>{handleString(key)}:</span><span>{Object.values(modelInfo)[index]}</span></p>
             })}
           </article>
         </div>

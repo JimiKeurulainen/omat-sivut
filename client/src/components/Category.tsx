@@ -7,9 +7,10 @@ import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import HTMLContent from './HTMLContent';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { handleString } from './Root';
+import { handleString, useLanguageContext } from './Root';
 import Submenu from './Submenu';
 import { useMediaQuery } from 'react-responsive';
+import LangSelect from './LangSelect';
 
 
 interface CategoryObj {
@@ -29,6 +30,7 @@ function Category({element, index}: Props) {
   const navigateURL = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
+  const {language, setLanguage} = useLanguageContext();
 
   const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
@@ -38,6 +40,7 @@ function Category({element, index}: Props) {
   
   const submenuRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const menuRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef(null);
 
   useEffect(() => {
     setCategories(Object.values(element)[0].map((project: CategoryObj, index1: number) => {
@@ -94,7 +97,7 @@ function Category({element, index}: Props) {
             classNames="Menu"
           >
             <div ref={menuRef} className='Menu'>
-              <h3>Kategoriat</h3>
+              <h3>{language === 'FI' ? 'Kategoriat' : 'Categories'}</h3>
               {categories}
             </div>
           </CSSTransition>
@@ -108,6 +111,9 @@ function Category({element, index}: Props) {
           <div className='TextContainer'>
             {activeHTML !== '' && activeComp}
             <div id='TextBG'></div>
+          </div>
+          <div className='LangContainer'>
+            <LangSelect />
           </div>
         </div>
       </Element>

@@ -1,0 +1,68 @@
+:root {
+  --height: 0px;
+}
+
+* {
+  font-family: 'Barlow', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.LangSelect {
+  height: 35%;
+  max-height: 25px;
+  min-width: 100px;
+  width: max-content;
+  max-width: 60%;
+  margin-right: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  p {
+    margin: 0px 10px;
+  }
+  span {
+    height: 100%;
+    aspect-ratio: 2 / 1;
+    border-radius: 25%/50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding: 2px;
+    box-shadow: 0px -1px 1px white;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.2));
+    transition: all 1.5s;
+
+    div {
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      box-shadow: 0px -1px 1px white;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+  }
+  span:hover {
+    cursor: pointer;
+    transition: all 0.3s;
+    div {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+.LangSelect-enter-done {
+  span {
+    transition: all 0.5s;
+
+    div {
+      transform-origin: 0% 0%;
+      transform: translateX(calc(100% + 4px));
+    }
+  }
+}
