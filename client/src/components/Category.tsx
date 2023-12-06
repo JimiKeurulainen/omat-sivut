@@ -58,7 +58,7 @@ function Category({element, index}: Props) {
     setSubmenuStates(Object.values(element)[0].map(() => {
       return false;
     }));
-  }, []);
+  }, [element]);
 
   useEffect(() => {
     setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)

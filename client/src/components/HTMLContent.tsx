@@ -9,30 +9,29 @@ interface Props {
   ID: string
 }
 
-function HTMLContent(props: Props) {
+function HTMLContent({ID}: Props) {
   let filesURL = 'no env route';
   const {language, setLanguage} = useLanguageContext();
-
-  if (language === 'FI') {
-    filesURL = process.env.REACT_APP_FILES_FI ? process.env.REACT_APP_FILES_FI : 'null';
-  }
-  if (language === 'EN') {
-    filesURL = process.env.REACT_APP_FILES_EN ? process.env.REACT_APP_FILES_EN : 'null';
-  }
 
   const [documentData, setDocumentData] = useState('');
   const [documentImages, setDocumentImages] = useState(Array<string>);
 
   useEffect(() => {
+    if (language === 'FI') {
+      filesURL = process.env.REACT_APP_FILES_FI ? process.env.REACT_APP_FILES_FI : 'null';
+    }
+    if (language === 'EN') {
+      filesURL = process.env.REACT_APP_FILES_EN ? process.env.REACT_APP_FILES_EN : 'null';
+    }
     // Get HTML file from server
-    props.ID && axios.get(filesURL + props.ID).then((res: any) => {
+    ID && axios.get(filesURL + ID).then((res: any) => {
       if (res.data.images && res.data.images.length > 0) {
         setDocumentImages(res.data.images);
       }
       // Sanitize html and set document data
       setDocumentData(sanitize(res.data.data));
     });
-  }, [props]);
+  }, [ID, language]);
 
   useEffect(() => {
     const images = document.querySelectorAll('.HTMLContent img');

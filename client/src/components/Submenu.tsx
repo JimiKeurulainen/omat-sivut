@@ -42,7 +42,7 @@ function Submenu(props: Props) {
       </button>
       );
     }));
-  }, []);
+  }, [props.baseRoute]);
 
   useEffect(() => {
     // Set submenu max height based on the amount of files found in the directory
@@ -52,7 +52,6 @@ function Submenu(props: Props) {
   }, [submenu]);
 
   function navigate(project: string) {
-    console.log('baseroute', props.baseRoute);
     props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${project}`);
     navigateURL(`${language}/${props.baseRoute.slice(2)}/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
     isMobile && props.setMenu(false);

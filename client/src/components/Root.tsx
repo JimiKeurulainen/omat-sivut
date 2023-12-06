@@ -84,7 +84,7 @@ function Root() {
 
   useEffect(() => {
     data.forEach(locale => {
-      Object.keys(locale)[0] === language && setLocalisedData(Object.values(locale)[0])
+      Object.keys(locale)[0] === language && setLocalisedData(Object.values(locale)[0]);
     });
   }, [language, data]);
 
