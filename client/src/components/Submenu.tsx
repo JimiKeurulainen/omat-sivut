@@ -23,9 +23,9 @@ interface Props {
 
 function Submenu(props: Props) {
   const navigateURL = useNavigate();
-  const location = useLocation();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
-  const {language, setLanguage} = useLanguageContext();
+  const {language} = useLanguageContext();
+  const location = useLocation();
 
   // const [location, setLocation]
   const [submenu, setSubmenu] = useState(Array<JSX.Element>);
@@ -36,7 +36,7 @@ function Submenu(props: Props) {
   useEffect(() => {
     setSubmenu(Object.values(props.data)[0].map((project: string) => {
       return (
-      <button ref={buttonRef} key={'projectBtn'+project} onClick={() => navigate(project)}>
+      <button ref={buttonRef} key={'projectBtn' + project} onClick={() => navigate(project)}>
         <p>{handleString(project)}</p>
         <div></div>
       </button>
@@ -50,6 +50,17 @@ function Submenu(props: Props) {
     const height = buttonRef.current?.offsetHeight ? buttonRef.current?.offsetHeight : 0;
     height !== 0 && root.style.setProperty('--height', `${height * Object.values(props.data)[0].length}px`);
   }, [submenu]);
+
+  useEffect(() => {
+    const locationArray = location.pathname.split('/');
+    if (locationArray.length === 5) {
+      Object.values(props.data)[0].forEach((file: string) => {
+        if (encodeURIComponent(file.slice(2)) === locationArray[4]) {
+          props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${file}`);
+        }
+      })
+    }
+  }, [props.data]);
 
   function navigate(project: string) {
     props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${project}`);

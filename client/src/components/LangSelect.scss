@@ -21,6 +21,7 @@
   margin-right: 30px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   background-color: rgba(0, 0, 0, 0);
 
@@ -56,6 +57,20 @@
     transition: all 0.3s;
     div {
       background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+  .Disclaimer {
+    margin-top: 15px;
+    transition: all 0.5s;
+
+    small {
+      width: 50%;
+      font-size: 0.7em;
+    }
+    img {
+      width: 50%;
+      background-color: rgba(0, 0, 0, 0);
+      filter: invert(100%) brightness(200%);
     }
   }
 }

@@ -1,55 +1,36 @@
 import './LangSelect.scss';
 import { useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import { handleString, useDataContext, useLanguageContext } from './Root';
+import { useDataContext, useLanguageContext } from './Root';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
 function LangSelect() {
-  const {language, setLanguage} = useLanguageContext();
+  const {language, setLanguage, setPreviousPath} = useLanguageContext();
   const langRef = useRef(null);
   const navigateURL = useNavigate();
   const location = useLocation();
   const data = useDataContext();
 
-  const [prevLang, setPrevLang] = useState('');
-  const [prevLangPath, setPrevLangPath] = useState(['']);
+  const [disclaimer, setDisclaimer] = useState(false);
 
+  // Set DeepL disclaimer message visibility based on location
   useEffect(() => {
-    // Reconstruct file path to navigate to the other language's equivalent path
-    if (prevLang && language !== prevLang) {
-      var tempPath: string = '/' + language;
-      console.log('langsel', language, data, prevLangPath, prevLang);
+    const pathArray = location.pathname.split('/');
 
-
-      data.forEach(category => {
-        if (Object.keys(category)[0].split('_')[0] === prevLangPath[0]) {
-          tempPath += '/' + Object.keys(category)[0].slice(2);
-
-          if (prevLangPath.length > 1) {
-            Object.values(category)[0].forEach(subcategory => {
-              if (Object.keys(subcategory)[0].split('_')[0] === prevLangPath[1]) {
-                tempPath += '/' + Object.keys(subcategory)[0].slice(2);
-
-                Object.values(subcategory)[0].forEach(file => {
-                  file.split('_')[0] === prevLangPath[2] && (tempPath += '/' + file.slice(2));
-                });
-              }
-            });
-          }
-        }
-      });
-      prevLang && navigateURL(tempPath);
+    if (pathArray.length === 2) {
+      setDisclaimer(false);
     }
-
-  }, [data]);
+    else {
+      language === 'EN' ? setDisclaimer(true) : setDisclaimer(false);
+    }
+  }, [language, location]);
 
   // Make this interaction into a function instead of useEffect
   // to avoid navigateURL from being triggered on language state mount
   function changeLanguage() {
     const toggleLang = language === 'FI' ? 'EN' : 'FI';
     setLanguage(toggleLang);
-    setPrevLang(language);
 
     // Reconstruct file path indexes to navigate to the other language's equivalent path
     const previousPathComponents = location.pathname.split('/');
@@ -73,7 +54,8 @@ function LangSelect() {
         }
       }
     });
-    tempPath.length !== 0 && setPrevLangPath(tempPath);
+    // console.log('tempPath', tempPath);
+    tempPath.length !== 0 && setPreviousPath(tempPath);
   }
 
   return (
@@ -87,6 +69,12 @@ function LangSelect() {
         <p>FI</p>
         <span><div /></span>
         <p>EN</p>
+        { disclaimer && 
+          <div className='Disclaimer'>
+            <small>English documents are translated with</small>
+            <img src='https://static.deepl.com/img/press/logo_DeepL.svg' />
+          </div>
+        }
       </div>
     </CSSTransition>
   )

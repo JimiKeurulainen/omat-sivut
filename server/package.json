@@ -12,8 +12,10 @@
   "author": "Jimi Keurulainen",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.2",
     "connect-busboy": "^1.0.0",
     "cors": "^2.8.5",
+    "deepl-node": "^1.11.0",
     "express": "^4.17.2",
     "https": "^1.0.0"
   },

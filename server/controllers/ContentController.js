@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import * as deepl from 'deepl-node';
 
 
 export const getRoutes = async (req, res) => {
@@ -44,19 +45,46 @@ export const getFile = async (req, res) => {
         const images = [];
         var html = ''
 
-        if (req.params.language === 'EN') {
-            if (dir.length === 0) {
-                const dirFI = fs.readdirSync('/var/www/jimikeurulainen/content/FI/');
-                console.log('hakee EN tyhjä', url, dir, dirFI);
-                dirFI.forEach(category => {
-                    if (category.split('_')[0] === req.params.category.split('_')[0]) {
-                        console.log('')
-                    }
-                });
-                // const categoryInFI = dirFI.indexOf(req.params.category.split(''))
-                // const pathFromFI = path.join('FI', req.params.category.split()) 
-            }
+        if (req.params.language === 'EN' && dir.length === 0) {
+            // If there is no already translated file on the server
+            const dirFI = fs.readdirSync('/var/www/jimikeurulainen/content/FI/');
+            const auth = fs.readFileSync('/var/www/jimikeurulainen/auth/auth.json', {encoding: 'utf8'});
+            const translator = new deepl.Translator(JSON.parse(auth).deepL);
+            var filePath = '';
+
+            dirFI.forEach(category => {
+                if (category.split('_')[0] === req.params.category.split('_')[0]) {
+                    const subcategories = fs.readdirSync(path.join('/var/www/jimikeurulainen/content/FI/', category));
+                    subcategories.forEach(subcategory => {
+                        if (subcategory.split('_')[0] === req.params.subcategory.split('_')[0]) {
+                            console.log('awd', subcategory);
+                            const files = fs.readdirSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory));
+                            files.forEach(file => {
+                                if (file.split('_')[0] === req.params.file.split('_')[0]) {
+                                    console.log('file', file, path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`));
+                                    // fileData = fs.readFileSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`), {encoding: 'binary'});
+                                    filePath = path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`);
+                                    // fileStats = fs.statSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`));
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            filePath !== '' && translator.translateDocument(
+                filePath,
+                path.join(url, `${req.params.file}.html`),
+                'fi',
+                'en-GB'
+            ).then(res => {
+                console.log('res', res, res.text)
+            })
         }
+        // else if () {
+        //     // If there is already a translated file
+        //     html = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
+        // }
         else {
             dir.forEach(file => {
                 const nameArr = file.split(".");

@@ -8,7 +8,7 @@ import { faSpinner, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import { Canvas, extend } from '@react-three/fiber';
 import { BackSide } from 'three';
-import { handleString } from './Root';
+import { handleString, useLanguageContext } from './Root';
 extend({Canvas});
 
 interface ModelInfo {
@@ -27,6 +27,7 @@ function Model(props: any) {
   const canvasRef = useRef<any>(null);
   const detailsRef = useRef<any>(null);
   const loadingRef = useRef<any>(null);
+  const {language} = useLanguageContext();
   
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
@@ -185,7 +186,7 @@ function Model(props: any) {
         <div className='Loading' ref={loadingRef}>
           <FontAwesomeIcon icon={faSpinner} className='Spinner' />
           <h2>{progress} %</h2>
-          <p>Ladataan mallia "{props.ID}"</p>
+          <p>{language === 'FI' ? 'Ladataan mallia' : 'Loading model'} "{props.ID}"</p>
         </div>
       </CSSTransition>
       }

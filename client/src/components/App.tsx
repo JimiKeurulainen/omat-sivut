@@ -25,7 +25,7 @@ function App() {
   const data = useDataContext();
   const location = useLocation();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
-  const {language, setLanguage} = useLanguageContext();
+  const {language, previousPath} = useLanguageContext();
 
   const [categories, setCategories] = useState(Array<string>);
   const [buttons, setButtons] = useState(Array<JSX.Element>);
@@ -83,7 +83,7 @@ function App() {
   // Navigate based on location
   useEffect(() => {
     // If location corresponds front-page
-    if (location.pathname === '/' + language) {
+    if (location.pathname.split('/').length === 2) {
       setPos(false);
       scroll.scrollToTop({
         duration: 1000,
@@ -125,10 +125,36 @@ function App() {
         });
         let appHeight = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--appHeight', `${appHeight}px`);
-        console.log('innerheight', window.innerHeight, document.documentElement.style.getPropertyValue('--appHeight'));
       });
     }
-  }, [location, lowers]);
+  }, [location]);
+
+  useEffect(() => {
+    // Reconstruct file path to navigate to the other language's equivalent path
+    var tempPath: string = '/' + language;
+
+    if (location.pathname.split('/').length !== 2) {
+      data.forEach(category => {
+        if (Object.keys(category)[0].split('_')[0] === previousPath[0]) {
+          tempPath += '/' + Object.keys(category)[0].slice(2);
+          console.log('langsel', language, data, previousPath, tempPath);
+
+          if (previousPath.length > 1) {
+            Object.values(category)[0].forEach(subcategory => {
+              if (Object.keys(subcategory)[0].split('_')[0] === previousPath[1]) {
+                tempPath += '/' + Object.keys(subcategory)[0].slice(2);
+                Object.values(subcategory)[0].forEach(file => {
+                  file.split('_')[0] === previousPath[2] && (tempPath += '/' + file.slice(2));
+                });
+              }
+            });
+          }
+        }
+      });
+    }
+    console.log(location.pathname.split('/'))
+    navigateURL(tempPath);
+  }, [data]);
 
   function scrollToElem(target: string) {
     let goToContainer = new Promise<void>((resolve, reject) => {

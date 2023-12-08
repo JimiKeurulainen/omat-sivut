@@ -27,10 +27,10 @@ const StateContext = createContext([false]);
 export const useStateContext = () => useContext(StateContext);
 
 function Category({element, index}: Props) {
-  const navigateURL = useNavigate();
-  const location = useLocation();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
-  const {language, setLanguage} = useLanguageContext();
+  const {language} = useLanguageContext();
+  const location = useLocation();
+  const navigateURL = useNavigate();
 
   const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
@@ -40,7 +40,6 @@ function Category({element, index}: Props) {
   
   const submenuRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const menuRef = useRef<HTMLDivElement>(null);
-  const langRef = useRef(null);
 
   useEffect(() => {
     setCategories(Object.values(element)[0].map((project: CategoryObj, index1: number) => {
@@ -61,6 +60,7 @@ function Category({element, index}: Props) {
   }, [element]);
 
   useEffect(() => {
+    console.log('activeHTML', activeHTML);
     setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)
   }, [activeHTML]);
 

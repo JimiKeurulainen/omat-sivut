@@ -19,7 +19,9 @@ interface SubRouteObj {
 
 interface LanguageObj {
   language: string,
-  setLanguage: Function
+  setLanguage: Function,
+  previousPath: Array<string>,
+  setPreviousPath: Function
 }
 
 export function handleString(string: any) {
@@ -34,13 +36,14 @@ export function handleString(string: any) {
 const DataContext = createContext<Array<RouteObj>>([{default: [{default1: ['default']}]}]);
 export const useDataContext = () => useContext(DataContext);
 
-const LanguageContext = createContext<LanguageObj>({language: 'FI', setLanguage() {}});
+const LanguageContext = createContext<LanguageObj>({language: 'FI', setLanguage() {}, previousPath: ['null'], setPreviousPath() {}});
 export const useLanguageContext = () => useContext(LanguageContext);
 
 function Root() {
   const [data, setData] = useState(Array<LocaleObj>);
   const [localisedData, setLocalisedData] = useState(Array<RouteObj>);
   const [language, setLanguage] = useState<string>('FI');
+  const [previousPath, setPreviousPath] = useState<Array<string>>(['null'])
   const [routes, setRoutes] = useState(Array<JSX.Element>);
 
   useEffect(() => {
@@ -86,10 +89,11 @@ function Root() {
     data.forEach(locale => {
       Object.keys(locale)[0] === language && setLocalisedData(Object.values(locale)[0]);
     });
+    // console.log('data', data);
   }, [language, data]);
 
   return (
-    <LanguageContext.Provider value={{language, setLanguage}}>
+    <LanguageContext.Provider value={{language, setLanguage, previousPath, setPreviousPath}}>
     <DataContext.Provider value={localisedData}>
       <BrowserRouter>
           <Routes>
