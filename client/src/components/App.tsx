@@ -137,7 +137,6 @@ function App() {
       data.forEach(category => {
         if (Object.keys(category)[0].split('_')[0] === previousPath[0]) {
           tempPath += '/' + Object.keys(category)[0].slice(2);
-          console.log('langsel', language, data, previousPath, tempPath);
 
           if (previousPath.length > 1) {
             Object.values(category)[0].forEach(subcategory => {
@@ -152,7 +151,6 @@ function App() {
         }
       });
     }
-    console.log(location.pathname.split('/'))
     navigateURL(tempPath);
   }, [data]);
 

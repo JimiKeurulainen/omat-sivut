@@ -60,7 +60,6 @@ function Category({element, index}: Props) {
   }, [element]);
 
   useEffect(() => {
-    console.log('activeHTML', activeHTML);
     setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)
   }, [activeHTML]);
 

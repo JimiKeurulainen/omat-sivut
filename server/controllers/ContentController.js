@@ -12,11 +12,9 @@ export const getRoutes = async (req, res) => {
 
         const routes = content.map(locale => {
             const categories = fs.readdirSync(path.join(url, locale), {encoding: encoding});
-            console.log('categories', categories, locale);
 
             const palaute = categories.map(category => {
                 const subcategories = fs.readdirSync(path.join(url, locale, category));
-                console.log('subcategories', subcategories);
 
                 return {[category]: subcategories.map(subcategory => {
                     if (subcategory) {
@@ -29,7 +27,6 @@ export const getRoutes = async (req, res) => {
             });
             return {[locale]: palaute};
         });
-        console.log('routes', routes);
 
         res.send(routes);
     } catch (error) {
@@ -57,14 +54,10 @@ export const getFile = async (req, res) => {
                     const subcategories = fs.readdirSync(path.join('/var/www/jimikeurulainen/content/FI/', category));
                     subcategories.forEach(subcategory => {
                         if (subcategory.split('_')[0] === req.params.subcategory.split('_')[0]) {
-                            console.log('awd', subcategory);
                             const files = fs.readdirSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory));
                             files.forEach(file => {
                                 if (file.split('_')[0] === req.params.file.split('_')[0]) {
-                                    console.log('file', file, path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`));
-                                    // fileData = fs.readFileSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`), {encoding: 'binary'});
                                     filePath = path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`);
-                                    // fileStats = fs.statSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`));
                                 }
                             });
                         }
@@ -82,7 +75,7 @@ export const getFile = async (req, res) => {
             })
         }
         // else if () {
-        //     // If there is already a translated file
+        //     // If a translated file already exists
         //     html = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
         // }
         else {

@@ -89,7 +89,6 @@ function Root() {
     data.forEach(locale => {
       Object.keys(locale)[0] === language && setLocalisedData(Object.values(locale)[0]);
     });
-    // console.log('data', data);
   }, [language, data]);
 
   return (

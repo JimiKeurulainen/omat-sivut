@@ -54,7 +54,6 @@ function LangSelect() {
         }
       }
     });
-    // console.log('tempPath', tempPath);
     tempPath.length !== 0 && setPreviousPath(tempPath);
   }
 

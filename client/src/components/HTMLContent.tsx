@@ -34,16 +34,13 @@ function HTMLContent({ID}: Props) {
       // Sanitize html and set document data
       setDocumentData(sanitize(res.data.data));
     });
-    console.log('ID', ID);
   }, [ID, language]);
 
   useEffect(() => {
     const pathComponents = location.pathname.split('/');
     const IDComponents = ID.split('/').map(comp => {
-      console.log('comp', comp, comp.slice(2));
       return comp.slice(2);
     });
-    console.log('location', pathComponents, IDComponents);
 
     if (ID && pathComponents.length !== 5 && pathComponents[2] === IDComponents[0]) {
       navigateURL('/' + language + '/' + IDComponents.toString().replaceAll(',', '/'));
