@@ -18,6 +18,13 @@ interface ModelInfo {
   "4_kuvaus": string,
 }
 
+interface ModelInfoEN {
+  "1_name": string,
+  "2_author": string,
+  "3_polygon_count": number,
+  "4_description": string,
+}
+
 
 function Model(props: any) {
   const modelURL = process.env.REACT_APP_MODELS ? process.env.REACT_APP_MODELS : 'no env variable';
@@ -34,7 +41,7 @@ function Model(props: any) {
   const [showDetails, setShowDetails] = useState(false);
   const [progress, setProgress] = useState(0);
   const [modelData, setModelData] = useState('');
-  const [modelInfo, setModelInfo] = useState<ModelInfo>({
+  const [modelInfo, setModelInfo] = useState<ModelInfo | ModelInfoEN>({
     "1_nimi": '',
     "2_tekijä": '',
     "3_tahkojen_määrä": 0,
@@ -101,6 +108,36 @@ function Model(props: any) {
     setModelInfo({...modelInfo, "3_tahkojen_määrä": pointCount / 3});
   }, [loaded]);
 
+  // Model info's localisation
+  useEffect(() => {
+    if (language === 'EN') {
+      const tempObj: any = {
+        "1_name": '',
+        "2_author": '',
+        "3_polygon_count": 0,
+        "4_description": '',
+      };
+      Object.values(modelInfo).forEach((value, index) => {
+        const key: string = Object.keys(tempObj)[index];
+        tempObj[key] = value;
+      });
+      setModelInfo(tempObj);
+    }
+    else {
+      const tempObj: any = {
+        "1_nimi": '',
+        "2_tekijä": '',
+        "3_tahkojen_määrä": 0,
+        "4_kuvaus": '',
+      };
+      Object.values(modelInfo).forEach((value, index) => {
+        const key: string = Object.keys(tempObj)[index];
+        tempObj[key] = value;
+      })
+      setModelInfo(tempObj);
+    }
+  }, [language]);
+
   function Initializer() {
     const { progress } = useProgress();
     // when Gltf-component finishes loading, set Canvas CSSTransition parameter to true
@@ -109,7 +146,7 @@ function Model(props: any) {
       <Html className='Loading' ref={loadingRef}>
         <FontAwesomeIcon icon={faSpinner} className='Spinner' />
         <h2>{progress} %</h2>
-        <p>Alustetaan "{props.ID}"</p>
+        <p>{language === 'FI' ? 'Alustetaan' : 'Initializing'} "{props.ID}"</p>
       </Html>
     )
   }
@@ -125,7 +162,7 @@ function Model(props: any) {
         <div className='ModelDetails' ref={detailsRef}>
           <FontAwesomeIcon icon={faInfoCircle} onClick={() => setShowDetails(showDetails => !showDetails)} />
           <article>
-            <h3>Mallin tiedot:</h3>
+            <h3>{language === 'FI' ? 'Mallin tiedot:' : 'Model Information:'}</h3>
             {Object.keys(modelInfo).map((key: string, index: number) => {
               return <p key={`infoBit${index}`}><span>{handleString(key)}:</span><span>{Object.values(modelInfo)[index]}</span></p>
             })}

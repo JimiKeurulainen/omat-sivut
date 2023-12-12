@@ -78,7 +78,6 @@ function App() {
     if (isMobile) {
       const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
       document.documentElement.style.setProperty('--offset', `${elemRect?.top}px`);
-      console.log('pos', location.pathname.split('/').length, pos, elemRect?.top);
     }
   }, [isMobile]);
 

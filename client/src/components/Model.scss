@@ -103,3 +103,11 @@
   from {transform: rotate(0deg)}
   to {transform: rotate(360deg)}
 }
+
+// MOBILE VIEW
+@media only screen and (max-width: 600px) {
+  .ModelDetails-enter-done {
+    width: 80%;
+    height: 30%;
+  }
+}
