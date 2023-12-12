@@ -13,9 +13,10 @@
 }
 
 .LangSelect {
+  min-height: 20px;
   height: 35%;
   max-height: 25px;
-  min-width: 100px;
+  min-width: 20px;
   width: max-content;
   max-width: 60%;
   margin-right: 30px;
@@ -59,6 +60,10 @@
       background-color: rgba(255, 255, 255, 0.3);
     }
   }
+  svg {
+    margin-right: 10px;
+    height: 80%;
+  }
   .Disclaimer {
     margin-top: 15px;
     transition: all 0.5s;
@@ -81,6 +86,44 @@
     div {
       transform-origin: 0% 0%;
       transform: translateX(calc(100% + 4px));
+    }
+  }
+}
+
+// MOBILE VIEW
+@media only screen and (max-width: 600px) {
+  .LangSelect {
+    max-width: 100%;
+    margin-right: auto;
+    flex-wrap: wrap;
+    // position: relative;
+
+    .Disclaimer {
+      top: 10%;
+      left: 0;
+      margin: 0;
+      position: absolute;
+      width: calc(100% - 20px);
+      margin-left: 10px;
+      height: min-content !important;
+      justify-content: center;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.3) 10%, rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      transition: all 0.5s;
+
+      small {
+        width: max-content;
+        font-size: 1em;
+        background-color: rgba(0, 0, 0, 0);
+      }
+      img {
+        width: 20%;
+        max-height: 80px;
+      }
+    }
+    .Fade {
+      opacity: 1;
+      transition: all 0.5s;
     }
   }
 }

@@ -1,6 +1,4 @@
 import './Header.scss';
-import { useRef } from 'react';
-import { useLanguageContext } from './Root';
 import LangSelect from './LangSelect';
 
 

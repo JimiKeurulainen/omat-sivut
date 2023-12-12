@@ -106,14 +106,17 @@ function Category({element, index}: Props) {
               <FontAwesomeIcon icon={faBars}/>
             </button>
             <h2>{handleString(Object.keys(element)[0])}</h2>
+            {isMobile && <div className='LangContainer'>
+            <LangSelect />
+          </div>}
           </div>
           <div className='TextContainer'>
             {activeHTML !== '' && activeComp}
             <div id='TextBG'></div>
           </div>
-          <div className='LangContainer'>
+          {!isMobile && <div className='LangContainer'>
             <LangSelect />
-          </div>
+          </div>}
         </div>
       </Element>
     </StateContext.Provider>

@@ -40,7 +40,6 @@ function App() {
 
   // Generate components based on data
   useEffect(() => {
-    // navigateURL('/FI');
     // Add temporary categories that will be used to set states
     const tempBtns: Array<JSX.Element> = [];
     const tempLowers: Array<JSX.Element> = [];
@@ -72,13 +71,16 @@ function App() {
     setButtons(tempBtns);
     setLowers(tempLowers);
     setLoading(true);
+  }, [data]);
 
+  useEffect(() => {
     // Navbar offset in mobile view
     if (isMobile) {
       const elemRect = document.getElementById('Lower')?.getBoundingClientRect();
       document.documentElement.style.setProperty('--offset', `${elemRect?.top}px`);
+      console.log('pos', location.pathname.split('/').length, pos, elemRect?.top);
     }
-  }, [data]);
+  }, [isMobile]);
 
   // Navigate based on location
   useEffect(() => {
@@ -113,9 +115,10 @@ function App() {
       // In the end, update the previous element to be the active element
       previousElement.current = active;
 
+
       // Add event listener that will scroll to right position,
       //  if screen size is changed and user is scrolled to lower
-      window.addEventListener('resize', (event) => {
+      window.addEventListener('resize', () => {
         scroller.scrollTo(`category${active}`, {
           duration: 500,
           delay: 0,

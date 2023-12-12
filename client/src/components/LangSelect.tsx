@@ -2,15 +2,19 @@ import './LangSelect.scss';
 import { useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useDataContext, useLanguageContext } from './Root';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 function LangSelect() {
   const {language, setLanguage, setPreviousPath} = useLanguageContext();
   const langRef = useRef(null);
-  const navigateURL = useNavigate();
+  const disclaimerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const data = useDataContext();
+  const isMobile = useMediaQuery({query: '(max-width: 600px)'});
 
   const [disclaimer, setDisclaimer] = useState(false);
 
@@ -18,13 +22,22 @@ function LangSelect() {
   useEffect(() => {
     const pathArray = location.pathname.split('/');
 
-    if (pathArray.length === 2) {
+    if (pathArray.length === 2 || isMobile) {
       setDisclaimer(false);
     }
     else {
       language === 'EN' ? setDisclaimer(true) : setDisclaimer(false);
     }
   }, [language, location]);
+
+  // Add animation class to disclaimer when it is mounted on mobile view
+  useEffect(() => {
+    if (isMobile) {
+      disclaimer && setTimeout(() => {
+        disclaimerRef.current && disclaimerRef.current.classList.add('Fade')
+      }, 100);
+    }
+  }, [disclaimer]);
 
   // Make this interaction into a function instead of useEffect
   // to avoid navigateURL from being triggered on language state mount
@@ -64,12 +77,15 @@ function LangSelect() {
     timeout={0}
     classNames="LangSelect"
     >
-      <div className='LangSelect' ref={langRef} onClick={changeLanguage}>
+      <div className='LangSelect' ref={langRef}>
         <p>FI</p>
-        <span><div /></span>
+        <span onClick={changeLanguage}><div /></span>
         <p>EN</p>
+        { isMobile && language === 'EN' && location.pathname.split('/').length !== 2 &&
+          <FontAwesomeIcon icon={faInfoCircle} onClick={() => setDisclaimer(disclaimer => !disclaimer)} />
+        }
         { disclaimer && 
-          <div className='Disclaimer'>
+          <div className='Disclaimer' ref={disclaimerRef}>
             <small>English documents are translated with</small>
             <img src='https://static.deepl.com/img/press/logo_DeepL.svg' />
           </div>
