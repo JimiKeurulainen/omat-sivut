@@ -8,6 +8,6 @@ const router = express.Router();
 router.get('/routes', getRoutes);
 router.get('/:language/:category/:subcategory/:file', getFile);
 router.get('/models/:model', getModel);
-router.get('/modelsInfo/:model', getModelInfo);
+router.get('/modelsInfo/:language/:model', getModelInfo);
  
 export default router;

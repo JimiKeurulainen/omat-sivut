@@ -12,17 +12,7 @@ import { handleString, useLanguageContext } from './Root';
 extend({Canvas});
 
 interface ModelInfo {
-  "1_nimi": string,
-  "2_tekijä": string,
-  "3_tahkojen_määrä": number,
-  "4_kuvaus": string,
-}
-
-interface ModelInfoEN {
-  "1_name": string,
-  "2_author": string,
-  "3_polygon_count": number,
-  "4_description": string,
+  [attr1: string]: string | number,
 }
 
 
@@ -41,12 +31,7 @@ function Model(props: any) {
   const [showDetails, setShowDetails] = useState(false);
   const [progress, setProgress] = useState(0);
   const [modelData, setModelData] = useState('');
-  const [modelInfo, setModelInfo] = useState<ModelInfo | ModelInfoEN>({
-    "1_nimi": '',
-    "2_tekijä": '',
-    "3_tahkojen_määrä": 0,
-    "4_kuvaus": '',
-  });
+  const [modelInfo, setModelInfo] = useState<ModelInfo>({});
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -66,9 +51,10 @@ function Model(props: any) {
       }).then(res => {
         // Separate request to get model data as a JSON
         // Used to calculate model polygon count
-        axios.get(modelInfoURL + props.ID).then(info => {
+        axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
+          info.data[Object.keys(info.data)[2]] = isPoly();
           setModelInfo(info.data);
-        })
+        });
         // When stream ends, create object url to put into Gltf object's source
         const url = window.URL.createObjectURL(new Blob([res.data], {type: 'model/gltf-binary'}));
         setModelData(url);
@@ -87,7 +73,7 @@ function Model(props: any) {
   useEffect(() => {
     let pointCount: number = 0;
 
-    // Loop through mesh children to calculate total polygon count
+    // Loop through mesh children recursively to calculate total polygon count
     const loop = (children: any) => {
       if (children.length > 0) {
         children.forEach((child: any) => {
@@ -104,39 +90,34 @@ function Model(props: any) {
     }
     meshRef.current && loop(meshRef.current.children);
 
-    // Split amount of points by 3 to get amount of triangles
+    // Split amount of points by 3 to get the amount of triangles
     setModelInfo({...modelInfo, "3_tahkojen_määrä": pointCount / 3});
   }, [loaded]);
 
   // Model info's localisation
   useEffect(() => {
     if (language === 'EN') {
-      const tempObj: any = {
-        "1_name": '',
-        "2_author": '',
-        "3_polygon_count": 0,
-        "4_description": '',
-      };
-      Object.values(modelInfo).forEach((value, index) => {
-        const key: string = Object.keys(tempObj)[index];
-        tempObj[key] = value;
+      axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
+        info.data[Object.keys(info.data)[2]] = isPoly();
+        setModelInfo(info.data);
       });
-      setModelInfo(tempObj);
     }
     else {
-      const tempObj: any = {
-        "1_nimi": '',
-        "2_tekijä": '',
-        "3_tahkojen_määrä": 0,
-        "4_kuvaus": '',
-      };
-      Object.values(modelInfo).forEach((value, index) => {
-        const key: string = Object.keys(tempObj)[index];
-        tempObj[key] = value;
-      })
-      setModelInfo(tempObj);
+      axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
+        info.data[Object.keys(info.data)[2]] = isPoly();
+        setModelInfo(info.data);
+      });
     }
   }, [language]);
+
+  function isPoly() {
+    if (Object.values(modelInfo)[2] === 0 || Object.values(modelInfo)[2] === undefined) {
+      return <FontAwesomeIcon icon={faSpinner} className='SpinnerSmall' />;
+    }
+    else {
+      return Object.values(modelInfo)[2];
+    }
+  }
 
   function Initializer() {
     const { progress } = useProgress();

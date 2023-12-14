@@ -116,7 +116,7 @@ export const getModel = async (req, res) => {
 }
 
 export const getModelInfo = async (req, res) => {
-    const infoUrl = path.join('/var/www/jimikeurulainen/content/models/', `${req.params.model}.json`);
+    const infoUrl = path.join('/var/www/jimikeurulainen/content/models/', `${req.params.model}_${req.params.language}.json`);
 
     try {
 		const info = fs.readFileSync(infoUrl);
