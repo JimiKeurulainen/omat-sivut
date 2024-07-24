@@ -6,20 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import HTMLContent from './HTMLContent';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { handleString, useLanguageContext } from './Root';
 import Submenu from './Submenu';
 import { useMediaQuery } from 'react-responsive';
 import LangSelect from './LangSelect';
+import { RouteObj, SubRouteObj } from '../types/types';
+import LanguageContext from '../contexts/LanguageContext';
+import { DataContext } from '../contexts/DataContext';
+import { useTranslation } from 'react-i18next';
 
-
-interface CategoryObj {
-  [key: string]: {
-    [key: string]: any
-  }
-}
 interface Props {
-  element: CategoryObj,
+  element: RouteObj,
   index: number,
 }
 
@@ -28,9 +24,9 @@ export const useStateContext = () => useContext(StateContext);
 
 function Category({element, index}: Props) {
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
-  const {language} = useLanguageContext();
-  const location = useLocation();
-  const navigateURL = useNavigate();
+  const { language } = useContext(LanguageContext);
+  const { data } = useContext(DataContext);
+  const { t } = useTranslation();
 
   const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
@@ -41,20 +37,12 @@ function Category({element, index}: Props) {
   const submenuRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // useEffect(() => {
+  //   (categories && submenuRefs.current) && openSubCategory(index);
+  // }, [categories]);
+
   useEffect(() => {
-    setCategories(Object.values(element)[0].map((project: CategoryObj, index1: number) => {
-      return (
-        <div className='SubmenuContainer' ref={(el: HTMLDivElement) => submenuRefs.current[index1] = el} key={'subcontainer'+index1}>
-          <button onClick={() => openSubCategory(project, index1)}>
-            <FontAwesomeIcon icon={faCaretRight} />
-            <p>{handleString(Object.keys(project)[0])}</p>
-            <div></div>
-          </button>
-          <Submenu baseRoute={Object.keys(element)[0]} data={project} index={index1} setMenu={setMenuPos} setActiveHTML={setActiveHTML}></Submenu>
-        </div>
-      );
-    }));
-    setSubmenuStates(Object.values(element)[0].map(() => {
+    setSubmenuStates(Object.values(element).map(() => {
       return false;
     }));
   }, [element]);
@@ -63,22 +51,22 @@ function Category({element, index}: Props) {
     setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)
   }, [activeHTML]);
 
-  function openSubCategory(project: any, index: number) {
-    setSubmenuStates(submenuStates => submenuStates.map((state: boolean, i: number) => {
-      if (i === index) {
-        if (submenuRefs.current[i].classList.contains('Active')) {
-          submenuRefs.current[i].classList.remove('Active');
-        }
-        else {
-          submenuRefs.current[i].classList.add('Active');
-        }
-        return !state;
-      }
-      else {
-        return state;
-      }
-    }));
-  }
+  // function openSubCategory(index: number) {
+  //   setSubmenuStates(submenuStates => submenuStates.map((state: boolean, i: number) => {
+  //     if (i === index && submenuRefs.current[i]) {
+  //       if (submenuRefs.current[i].classList.contains('Active')) {
+  //         submenuRefs.current[i].classList.remove('Active');
+  //       }
+  //       else {
+  //         submenuRefs.current[i].classList.add('Active');
+  //       }
+  //       return !state;
+  //     }
+  //     else {
+  //       return state;
+  //     }
+  //   }));
+  // }
 
   function onscroll(event: any) {
     console.log('scroll', event);
@@ -86,18 +74,35 @@ function Category({element, index}: Props) {
 
   return (
     <StateContext.Provider value={submenuStates}>
-      <Element name={`category${index}`} className='CategoryContainer'>
+      <Element 
+        name={`category${Object.keys(data[language])[index]}`} 
+        className='CategoryContainer'
+      >
         <div className='Category' onScroll={(e) => onscroll(e)}>
-          {categories.length !== 0 &&
+          {Object.keys(element).length !== 0 &&
           <CSSTransition
             nodeRef={menuRef}
             in={menuPos}
             timeout={isMobile ? 200 : 0}
             classNames="Menu"
+            key={`category${Object.keys(data[language])[index]}`}
           >
             <div ref={menuRef} className='Menu'>
-              <h3>{language === 'FI' ? 'Kategoriat' : 'Categories'}</h3>
-              {categories}
+              <h3>{t('categories')}</h3>
+              {Object.values(element).map((subcategory: any, index1: number) => {
+                return (
+                  <Submenu 
+                    key={'subcategory' + Object.keys(element)[index1]}
+                    baseRoute={Object.keys(data[language])[index]} 
+                    title={Object.keys(element)[index1]}
+                    data={subcategory}
+                    // openMenu={() => openSubCategory(index1)}
+                    index={index1} 
+                    setMenu={setMenuPos} 
+                    setActiveHTML={setActiveHTML}
+                  />
+                );
+              })}
             </div>
           </CSSTransition>
           }
@@ -105,7 +110,7 @@ function Category({element, index}: Props) {
             <button className='MenuButton' onClick={() => setMenuPos(menuPos => !menuPos)}>
               <FontAwesomeIcon icon={faBars}/>
             </button>
-            <h2>{handleString(Object.keys(element)[0])}</h2>
+            <h2>{Object.keys(data[language])[index].replaceAll('_', ' ')}</h2>
             {isMobile && <div className='LangContainer'>
             <LangSelect />
           </div>}

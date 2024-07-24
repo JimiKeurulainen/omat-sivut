@@ -1,18 +1,22 @@
 import './HTMLContent.scss';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
+import axios, { AxiosResponse } from 'axios';
 import { sanitize } from 'dompurify';
-import { useLanguageContext } from './Root';
 import { useLocation, useNavigate } from 'react-router-dom';
+import LanguageContext from '../contexts/LanguageContext';
 
 
 interface Props {
   ID: string
 }
+interface Data {
+  data: string,
+  images: Array<string>
+}
 
 function HTMLContent({ID}: Props) {
   let filesURL = 'no env route';
-  const {language} = useLanguageContext();
+  const {language} = useContext(LanguageContext);
   const location = useLocation();
   const navigateURL = useNavigate();
 
@@ -27,12 +31,12 @@ function HTMLContent({ID}: Props) {
       filesURL = process.env.REACT_APP_FILES_EN ? process.env.REACT_APP_FILES_EN : 'null';
     }
     // Get HTML file from server
-    ID && axios.get(filesURL + ID).then((res: any) => {
-      if (res.data.images && res.data.images.length > 0) {
-        setDocumentImages(res.data.images);
+    ID && axios.get(filesURL + ID).then(({data}: AxiosResponse) => {
+      if (data.images && data.images.length > 0) {
+        setDocumentImages(data.images);
       }
       // Sanitize html and set document data
-      setDocumentData(sanitize(res.data.data));
+      setDocumentData(sanitize(data.data));
     });
   }, [ID, language]);
 

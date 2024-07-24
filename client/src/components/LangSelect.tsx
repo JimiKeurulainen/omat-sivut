@@ -1,19 +1,19 @@
 import './LangSelect.scss';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import { useDataContext, useLanguageContext } from './Root';
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import LanguageContext from '../contexts/LanguageContext';
+import { DataContext } from '../contexts/DataContext';
 
 
 function LangSelect() {
-  const {language, setLanguage, setPreviousPath} = useLanguageContext();
+  const {language, handleLanguageChange, setPreviousPath} = useContext(LanguageContext);
   const langRef = useRef(null);
   const disclaimerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const data = useDataContext();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
 
   const [disclaimer, setDisclaimer] = useState(false);
@@ -43,32 +43,33 @@ function LangSelect() {
   // to avoid navigateURL from being triggered on language state mount
   function changeLanguage() {
     const toggleLang = language === 'FI' ? 'EN' : 'FI';
-    setLanguage(toggleLang);
-
-    // Reconstruct file path indexes to navigate to the other language's equivalent path
-    const previousPathComponents = location.pathname.split('/');
-    var tempPath: Array<string> = [];
-
-    data.forEach(category => {
-      if (Object.keys(category)[0].slice(2) === previousPathComponents[2]) {
-        tempPath.push(Object.keys(category)[0].split('_')[0]);
-
-        if (Object.values(category)[0].length !== 0) {
-          Object.values(category)[0].forEach(subcategory => {
-  
-            if (Object.keys(subcategory)[0].slice(2) === previousPathComponents[3]) {
-              tempPath.push(Object.keys(subcategory)[0].split('_')[0]);
-  
-              Object.values(subcategory)[0].forEach(file => {
-                encodeURIComponent(file.slice(2)) === previousPathComponents[4] && tempPath.push(file.split('_')[0]);
-              })
-            }
-          });
-        }
-      }
-    });
-    tempPath.length !== 0 && setPreviousPath(tempPath);
+    handleLanguageChange(toggleLang);
   }
+
+  //   // Reconstruct file path indexes to navigate to the other language's equivalent path
+  //   const previousPathComponents = location.pathname.split('/');
+  //   var tempPath: Array<string> = [];
+
+  //   localisedData.forEach(category => {
+  //     if (Object.keys(category)[0].slice(2) === previousPathComponents[2]) {
+  //       tempPath.push(Object.keys(category)[0].split('_')[0]);
+
+  //       if (Object.values(category)[0].length !== 0) {
+  //         Object.values(category)[0].forEach(subcategory => {
+  
+  //           if (Object.keys(subcategory)[0].slice(2) === previousPathComponents[3]) {
+  //             tempPath.push(Object.keys(subcategory)[0].split('_')[0]);
+  
+  //             Object.values(subcategory)[0].forEach(file => {
+  //               encodeURIComponent(file.slice(2)) === previousPathComponents[4] && tempPath.push(file.split('_')[0]);
+  //             })
+  //           }
+  //         });
+  //       }
+  //     }
+  //   });
+  //   tempPath.length !== 0 && setPreviousPath(tempPath[0]);
+  // }
 
   return (
     <CSSTransition

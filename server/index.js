@@ -1,5 +1,6 @@
 import express from "express";
 import contentRoutes from "./routes/ContentRoutes.js";
+import statusRoutes from "./routes/StatusRoutes.js";
 import https from "https";
 import http from "http";
 import cors from "cors";
@@ -20,5 +21,6 @@ app.use(busboy({
 })); // Insert the busboy middle-ware
 
 app.use('/content', contentRoutes);
+app.use('/status', statusRoutes);
 
 http.createServer(app).listen(5555, () => console.log('Server running at port 5555'));

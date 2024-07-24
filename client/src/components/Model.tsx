@@ -8,7 +8,7 @@ import { faSpinner, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import { Canvas, extend } from '@react-three/fiber';
 import { BackSide } from 'three';
-import { handleString, useLanguageContext } from './Root';
+import { getModel, getModelInfo } from '../api/models';
 extend({Canvas});
 
 interface ModelInfo {
@@ -24,7 +24,7 @@ function Model(props: any) {
   const canvasRef = useRef<any>(null);
   const detailsRef = useRef<any>(null);
   const loadingRef = useRef<any>(null);
-  const {language} = useLanguageContext();
+  // const {language} = useContext(LanguageContext);
   
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
@@ -39,29 +39,9 @@ function Model(props: any) {
 
     // Get model data stream, if model is not already loaded
     if (!modelData && !cancelTokenSource.token.reason) {
-      axios.get(modelURL + props.ID, {responseType: 'arraybuffer', onDownloadProgress: (progEvent) => {
-        // Calculate progress percentage
-        if (!cancelTokenSource.token.reason) {
-          const total = progEvent.total !== undefined ? progEvent.total : 1;
-          setProgress(Math.floor((progEvent.loaded / total) * 100));
-        }
-      // If component gets unmounted, cancel stream request
-      }, cancelToken: cancelTokenSource.token,
+      initializeModel();
+      // info.data[Object.keys(info.data)[2]] = isPoly();
       
-      }).then(res => {
-        // Separate request to get model data as a JSON
-        // Used to calculate model polygon count
-        axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
-          info.data[Object.keys(info.data)[2]] = isPoly();
-          setModelInfo(info.data);
-        });
-        // When stream ends, create object url to put into Gltf object's source
-        const url = window.URL.createObjectURL(new Blob([res.data], {type: 'model/gltf-binary'}));
-        setModelData(url);
-      // Log and error if model get request is cancelled
-      }).catch(error => {
-        console.log(error.message);
-      });
     };
     return () => {
       if (!cancelTokenSource.token.reason) {
@@ -94,21 +74,28 @@ function Model(props: any) {
     setModelInfo({...modelInfo, "3_tahkojen_määrä": pointCount / 3});
   }, [loaded]);
 
-  // Model info's localisation
-  useEffect(() => {
-    if (language === 'EN') {
-      axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
-        info.data[Object.keys(info.data)[2]] = isPoly();
-        setModelInfo(info.data);
-      });
-    }
-    else {
-      axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
-        info.data[Object.keys(info.data)[2]] = isPoly();
-        setModelInfo(info.data);
-      });
-    }
-  }, [language]);
+  // // Model info's localisation
+  // useEffect(() => {
+  //   if (language === 'EN') {
+  //     axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
+  //       info.data[Object.keys(info.data)[2]] = isPoly();
+  //       setModelInfo(info.data);
+  //     });
+  //   }
+  //   else {
+  //     axios.get(modelInfoURL + language + '/' + props.ID).then(info => {
+  //       info.data[Object.keys(info.data)[2]] = isPoly();
+  //       setModelInfo(info.data);
+  //     });
+  //   }
+  // }, [language]);
+
+  async function initializeModel() {
+    const cancelTokenSource = axios.CancelToken.source();
+
+    // const modelResponse = await getModel(props.ID, setProgress, cancelTokenSource);
+    // const modelInfoResponse = await getModelInfo();
+  }
 
   function isPoly() {
     if (Object.values(modelInfo)[2] === 0 || Object.values(modelInfo)[2] === undefined) {
@@ -127,7 +114,7 @@ function Model(props: any) {
       <Html className='Loading' ref={loadingRef}>
         <FontAwesomeIcon icon={faSpinner} className='Spinner' />
         <h2>{progress} %</h2>
-        <p>{language === 'FI' ? 'Alustetaan' : 'Initializing'} "{props.ID}"</p>
+        {/* <p>{language === 'FI' ? 'Alustetaan' : 'Initializing'} "{props.ID}"</p> */}
       </Html>
     )
   }
@@ -143,9 +130,9 @@ function Model(props: any) {
         <div className='ModelDetails' ref={detailsRef}>
           <FontAwesomeIcon icon={faInfoCircle} onClick={() => setShowDetails(showDetails => !showDetails)} />
           <article>
-            <h3>{language === 'FI' ? 'Mallin tiedot:' : 'Model Information:'}</h3>
+            {/* <h3>{language === 'FI' ? 'Mallin tiedot:' : 'Model Information:'}</h3> */}
             {Object.keys(modelInfo).map((key: string, index: number) => {
-              return <p key={`infoBit${index}`}><span>{handleString(key)}:</span><span>{Object.values(modelInfo)[index]}</span></p>
+              return <p key={`infoBit${index}`}><span>{(key)}:</span><span>{Object.values(modelInfo)[index]}</span></p>
             })}
           </article>
         </div>
@@ -204,7 +191,7 @@ function Model(props: any) {
         <div className='Loading' ref={loadingRef}>
           <FontAwesomeIcon icon={faSpinner} className='Spinner' />
           <h2>{progress} %</h2>
-          <p>{language === 'FI' ? 'Ladataan mallia' : 'Loading model'} "{props.ID}"</p>
+          {/* <p>{language === 'FI' ? 'Ladataan mallia' : 'Loading model'} "{props.ID}"</p> */}
         </div>
       </CSSTransition>
       }

@@ -1,0 +1,103 @@
+:root {
+  --animDuration: 0.6s;
+}
+
+.Nappi {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  font-size: 1.6em;
+  border: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0);
+
+  .CaretIcon {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  p {
+    position: absolute;
+    transition: transform 0.2s;
+    background-color: rgba(0, 0, 0, 0);
+    transform: translateY(0%);
+  }
+  .Etusivulle {
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: all 1s;
+  }
+  div {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-image: linear-gradient(rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0.3) 100%);
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition: all 0.2s;
+  }
+}
+.Nappi:hover {
+  cursor: pointer;
+
+  div {
+    opacity: 1;
+  }
+}
+
+.Up:hover {
+  .CategoryTitle {
+    transform: translateY(-2vh);
+  }
+}
+.Down {
+  div {
+    transform: rotateX(180deg);
+  }
+}
+.Down:hover {
+  .CategoryTitle {
+    transform: translateY(1vh);
+  }
+}
+
+.Uninitialized {
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: all 1s;
+}
+.Initialized {
+  transform: translateY(0%);
+  opacity: 1;
+  transition: all 1s;
+}
+
+.Active {
+  .CategoryTitle {
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.6s;
+  }
+  .Etusivulle {
+    opacity: 1;
+    transform: translateY(0%);
+    transition: all 0.6s;
+  }
+  div {
+    opacity: 1;
+    transition: all 0.6s;
+  }
+}
+.Active:hover {
+  .Etusivulle {
+    transform: translateY(1vh);
+  }
+}

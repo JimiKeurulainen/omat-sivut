@@ -4,32 +4,55 @@ import * as deepl from 'deepl-node';
 
 
 export const getRoutes = async (req, res) => {
-    const url = path.join('/var/www/jimikeurulainen/content/');
+    const url = path.join(process.env.CONTENT_PATH);
     const encoding = 'utf8';
     try {
-        const content = fs.readdirSync(url, {encoding: encoding});
-        content.splice(content.indexOf('models'), 1);
+        const content = fs.readdirSync(url, {encoding: encoding, recursive: true, withFileTypes: true});
+        const routes = {};
 
-        const routes = content.map(locale => {
-            const categories = fs.readdirSync(path.join(url, locale), {encoding: encoding});
+        const handleName = (string) => {
+            const nameArr = string.split('_');
+            nameArr.length > 1 && nameArr.splice(0, 1);
+            const name = nameArr.join('_');
 
-            const palaute = categories.map(category => {
-                const subcategories = fs.readdirSync(path.join(url, locale, category));
+            return name;
+        }
 
-                return {[category]: subcategories.map(subcategory => {
-                    if (subcategory) {
-                        return {[subcategory]: fs.readdirSync(path.join(url, locale, category, subcategory))}
-                    }
-                    else {
-                        return [];
-                    }
-                })}
-            });
-            return {[locale]: palaute};
-        });
+        for (const dirent of content) {            
+            const tempArr = dirent.parentPath.split('\\');
+            tempArr.forEach((path, index) => {
+                tempArr[index] = handleName(path);
+            })
+            const level = tempArr.length - 3;
+
+            const name = handleName(dirent.name);
+            const parent = tempArr[tempArr.length - 1];
+            const grandparent = tempArr[tempArr.length - 2];
+            const greatgrandparent = tempArr[tempArr.length - 3];
+            console.log('LEVEL', level, tempArr, parent);
+
+
+            if (level === 1 && dirent.name !== 'models') {
+                routes[name] = {}
+            }
+            else if (level === 2 && tempArr.includes(parent)) {
+                routes[parent][name] = {};
+                console.log('2', parent, name);
+            }
+            else if (level === 3 && tempArr.includes(parent)) {
+                console.log('3', parent, name, grandparent);
+                routes[grandparent][parent][name] = [];
+            }
+            else if (level === 4 && tempArr.includes(parent) && dirent.isDirectory()) {
+                console.log('4', parent, name);
+                routes[greatgrandparent][grandparent][parent].push(name);
+            }
+        }
+        console.log('ROUTES', routes);
 
         res.send(routes);
     } catch (error) {
+        console.error(error);
         res.json({ message: error.message });
     }   
 }

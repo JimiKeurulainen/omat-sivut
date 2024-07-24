@@ -3,20 +3,19 @@ import './Submenu.scss';
 import { useEffect, useState, useRef, useContext } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useStateContext } from './Category';
-import { handleString, useLanguageContext } from './Root';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import LanguageContext from '../contexts/LanguageContext';
+import { SubRouteObj } from '../types/types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
-
-interface CategoryObj {
-  [key: string]: {
-    [key: string]: any
-  }
-}
 interface Props {
   baseRoute: string,
-  data: CategoryObj,
+  title: string,
+  data: Array<string>,
   index: number,
+  // openMenu: Function,
   setMenu: Function,
   setActiveHTML: Function
 }
@@ -24,42 +23,22 @@ interface Props {
 function Submenu(props: Props) {
   const navigateURL = useNavigate();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
-  const {language} = useLanguageContext();
-  const location = useLocation();
+  const { language } = useContext(LanguageContext);
 
-  // const [location, setLocation]
-  const [submenu, setSubmenu] = useState(Array<JSX.Element>);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [submenuHeight, setSubmenuHeight] = useState<number>(0);
+  const [buttonHeight, setButtonHeight] = useState<number>(0);
+  const [active, setActive] = useState<boolean>(false);
   const submenuRef = useRef<HTMLDivElement>(null);
-  const state = useStateContext();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setSubmenu(Object.values(props.data)[0].map((project: string) => {
-      return (
-      <button ref={buttonRef} key={'projectBtn' + project} onClick={() => navigate(project)}>
-        <p>{handleString(project)}</p>
-        <div></div>
-      </button>
-      );
-    }));
-  }, [props.baseRoute]);
+    buttonRef.current?.clientHeight && setButtonHeight(buttonRef.current?.clientHeight + 2);
 
-  useEffect(() => {
-    // Set submenu max height based on the amount of files found in the directory
-    const root = document.querySelector(':root') as HTMLElement;
-    const height = buttonRef.current?.offsetHeight ? buttonRef.current?.offsetHeight : 0;
-    height !== 0 && root.style.setProperty('--height', `${height * Object.values(props.data)[0].length}px`);
-  }, [submenu]);
-
-  useEffect(() => {
-    const locationArray = location.pathname.split('/');
-    if (locationArray.length === 5) {
-      Object.values(props.data)[0].forEach((file: string) => {
-        if (encodeURIComponent(file.slice(2)) === locationArray[4]) {
-          props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${file}`);
-        }
-      })
+    let height = 0;
+    for (let i = 0; i <= props.data.length; i++) {
+      buttonRef.current?.clientHeight && (height += buttonRef.current?.clientHeight + 2);
     }
+    setSubmenuHeight(height);
   }, [props.data]);
 
   function navigate(project: string) {
@@ -70,13 +49,35 @@ function Submenu(props: Props) {
 
   return (
     <CSSTransition
-    nodeRef={submenuRef}
-    in={state[props.index]}
-    timeout={0}
-    classNames="Submenu"
+      nodeRef={submenuRef}
+      in={true}
+      timeout={0}
+      classNames="Submenu"
     >
-      <div className='Submenu' ref={submenuRef}>
-        {submenu}
+      <div 
+        className='Submenu' 
+        ref={submenuRef}
+        style={{maxHeight: active ? submenuHeight : buttonHeight}}
+        key={'submenu' + props.title}
+      >
+        <button 
+          onClick={() => setActive(!active)}
+          ref={buttonRef}
+        >
+          <FontAwesomeIcon icon={faCaretRight} />
+          <p>{props.title}</p>
+          <div></div>
+        </button>
+        {/* {Object.keys(props.data).map((project: any)=> {
+          // ref={(el: HTMLDivElement) => submenuRefs.current[props.index] = el}
+          return (
+            <div className='SubmenuContainer' key={'subcontainer' + props.title}>
+              <button ref={buttonRef} key={'projectBtn' + project} onClick={() => navigate('')}>
+                <p>{Object.keys(project)[0]}</p>
+              </button>         
+            </div>
+          )
+        })} */}
       </div>
     </CSSTransition>
   )

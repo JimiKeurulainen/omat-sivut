@@ -1,0 +1,56 @@
+.Navbar {
+  width: 100%;
+  height: 15%;
+  display: flex;
+  position: absolute;
+  top: 85%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0);
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75));
+}
+.Navbar-enter {
+  top: 85%;
+}
+.Navbar-enter-active {
+  height: 8%;
+  top: 100%;
+  transition: all 1s;
+}
+.Navbar-enter-done {
+  height: 8%;
+  top: 100%;
+  transition: all 1s;
+}
+
+.Navbar-exit {
+  top: 100%;
+}
+.Navbar-exit-active {
+  top: 85%;
+  transition: all 1s;
+}
+.Navbar-exit-done {
+  top: 85%;
+  transition: all 1s;
+}
+
+.CategoryContainer {
+  flex: 1;
+}
+
+// MOBILE VIEW
+@media only screen and (max-width: 600px) {
+  .Navbar {
+    font-size: 14px;
+  }
+  .Navbar-enter-done {
+    height: 10%;
+    top: var(--offset);
+
+    .Active {
+      p {
+        opacity: 0;
+      }
+    }
+  }
+}
