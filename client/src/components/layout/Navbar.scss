@@ -7,32 +7,41 @@
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0);
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75));
-}
-.Navbar-enter {
-  top: 85%;
-}
-.Navbar-enter-active {
-  height: 8%;
-  top: 100%;
   transition: all 1s;
 }
-.Navbar-enter-done {
-  height: 8%;
-  top: 100%;
-  transition: all 1s;
-}
+// .Up {
 
-.Navbar-exit {
+// }
+.Navbar.Down {
+  height: 8%;
   top: 100%;
-}
-.Navbar-exit-active {
-  top: 85%;
   transition: all 1s;
 }
-.Navbar-exit-done {
-  top: 85%;
-  transition: all 1s;
-}
+// .Navbar-enter {
+//   top: 85%;
+// }
+// .Navbar-enter-active {
+//   height: 8%;
+//   top: 100%;
+//   transition: all 1s;
+// }
+// .Navbar-enter-done {
+//   height: 8%;
+//   top: 100%;
+//   transition: all 1s;
+// }
+
+// .Navbar-exit {
+//   top: 100%;
+// }
+// .Navbar-exit-active {
+//   top: 85%;
+//   transition: all 1s;
+// }
+// .Navbar-exit-done {
+//   top: 85%;
+//   transition: all 1s;
+// }
 
 .CategoryContainer {
   flex: 1;

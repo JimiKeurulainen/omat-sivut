@@ -1,12 +1,9 @@
 // import './App.css';
 import './Submenu.scss';
 import { useEffect, useState, useRef, useContext } from 'react';
-import { CSSTransition } from 'react-transition-group';
-import { useStateContext } from './Category';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import LanguageContext from '../contexts/LanguageContext';
-import { SubRouteObj } from '../types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,7 +12,6 @@ interface Props {
   title: string,
   data: Array<string>,
   index: number,
-  // openMenu: Function,
   setMenu: Function,
   setActiveHTML: Function
 }
@@ -24,11 +20,12 @@ function Submenu(props: Props) {
   const navigateURL = useNavigate();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
   const { language } = useContext(LanguageContext);
+  const location = useLocation();
 
   const [submenuHeight, setSubmenuHeight] = useState<number>(0);
   const [buttonHeight, setButtonHeight] = useState<number>(0);
   const [active, setActive] = useState<boolean>(false);
-  const submenuRef = useRef<HTMLDivElement>(null);
+
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -36,7 +33,7 @@ function Submenu(props: Props) {
 
     let height = 0;
     for (let i = 0; i <= props.data.length; i++) {
-      buttonRef.current?.clientHeight && (height += buttonRef.current?.clientHeight + 2);
+      buttonRef.current?.clientHeight && (height += buttonRef.current?.clientHeight);
     }
     setSubmenuHeight(height);
   }, [props.data]);
@@ -48,38 +45,34 @@ function Submenu(props: Props) {
   }
 
   return (
-    <CSSTransition
-      nodeRef={submenuRef}
-      in={true}
-      timeout={0}
-      classNames="Submenu"
+    <div 
+      className={`
+        Submenu
+        ${active && 'Active'}
+      `}
+      style={{maxHeight: active ? submenuHeight : buttonHeight}}
+      key={'submenu' + props.title}
     >
-      <div 
-        className='Submenu' 
-        ref={submenuRef}
-        style={{maxHeight: active ? submenuHeight : buttonHeight}}
-        key={'submenu' + props.title}
+      <button 
+        onClick={() => setActive(!active)}
+        ref={buttonRef}
       >
-        <button 
-          onClick={() => setActive(!active)}
-          ref={buttonRef}
-        >
-          <FontAwesomeIcon icon={faCaretRight} />
-          <p>{props.title}</p>
-          <div></div>
-        </button>
-        {/* {Object.keys(props.data).map((project: any)=> {
-          // ref={(el: HTMLDivElement) => submenuRefs.current[props.index] = el}
-          return (
-            <div className='SubmenuContainer' key={'subcontainer' + props.title}>
-              <button ref={buttonRef} key={'projectBtn' + project} onClick={() => navigate('')}>
-                <p>{Object.keys(project)[0]}</p>
-              </button>         
-            </div>
-          )
-        })} */}
-      </div>
-    </CSSTransition>
+        {props.data.length > 0 ? <FontAwesomeIcon icon={faCaretRight} /> : <span />}
+        <p>{props.title}</p>
+        <div />
+      </button>
+      {props.data.map((project: string)=> {
+        return (
+          <button 
+            className='SubmenuBtn'
+            key={'projectBtn' + project} 
+            onClick={() => navigate(props.title + '/' + project)}
+          >
+            <p className='TextInit'>{project}</p>
+          </button>
+        )
+      })}
+    </div>
   )
 }
 

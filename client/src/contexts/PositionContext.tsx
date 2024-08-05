@@ -38,11 +38,10 @@ export function PositionContextProvider({ children }: ContextProps) {
 
   async function handleScroll() {
     const locationArr = location.pathname.split('/');
-    console.log('LOCATION ARR', locationArr, location.pathname);
 
     if (locationArr.length > 2) {
       setVertical(true);
-      !vertical && await scrollVertically('Lower');
+      await scrollVertically('Lower');
       scrollHorizontally(`category${locationArr[2]}`);
     }
     else {

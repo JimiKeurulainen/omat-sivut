@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { scroller } from 'react-scroll';
 import { DataContext } from './DataContext';
 import LanguageContext from './LanguageContext';
 
@@ -26,13 +24,11 @@ export function AnimationContextProvider({ children }: ContextProps) {
   const [appRef, setAppRef] = useState<any>();
   const [navbarInit, setNavbarInit] = useState<number>(-1);
   const [activeCategory, setActiveCategory] = useState<number>(-1);
-  const [error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const { data } = useContext(DataContext);
   const { language } = useContext(LanguageContext);
 
-  // Trigger the initial animation on page load
+  // Trigger the initialization animation on page load
   useEffect(() => {
     if (appRef) {
       setTimeout(() => {
@@ -61,7 +57,6 @@ export function AnimationContextProvider({ children }: ContextProps) {
 
       if (route) {
         const routeArr = route.split('/');
-        console.log('ROUTE ARR', routeArr, data);
         routeArr[1] && setTimeout(() => {
           setActiveCategory(Object.keys(data[routeArr[1]]).indexOf(routeArr[2]));
         }, animDelay);

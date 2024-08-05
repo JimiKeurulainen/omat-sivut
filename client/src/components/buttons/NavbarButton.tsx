@@ -1,20 +1,18 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './NavbarButton.scss';
-import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { useTranslation } from 'react-i18next';
 import { PositionContext } from '../../contexts/PositionContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import CustomCaret from '../icons/CustomCaret';
+import SlideParagraph from '../text/SlideParagraph';
 
 
 interface NavbarButtonProps {
-  title: string;
+  index: number;
   function: (attr?: string) => void;
   initialized: boolean;
   active: boolean;
 }
 
 function NavbarButton(props: NavbarButtonProps) {
-  const { t } = useTranslation();
   const { vertical } = useContext(PositionContext);
 
   return (
@@ -23,16 +21,20 @@ function NavbarButton(props: NavbarButtonProps) {
         Nappi
         ${vertical ? 'Down' : 'Up'}
         ${props.initialized ? 'Initialized' : 'Uninitialized'} 
-        ${props.active ? 'Active' : 'Inactive'}
+        ${props.active && 'Active'}
       `}
-      key={`nappi${props.title}`}
+      key={`nappi${props.index}`}
       onClick={() => props.function()}
-    // ref={(el: HTMLButtonElement) => categoryRefs.current[index] = el}
     >
-      <div key={`nappiBG${props.title}`}></div>
-      <FontAwesomeIcon icon={faCaretUp} className='CaretIcon'/>
-      <p className='Etusivulle'>{t('toFrontPage')}</p>
-      <p className='CategoryTitle'>{props.title.replace('_', ' ')}</p>
+      <div key={`nappiBG${props.index}`} />
+      <CustomCaret />
+      <p>
+        <SlideParagraph 
+          triggerAnim={props.initialized}
+          translatable={props.active ? 'toFrontPage' : ''}
+          indices={[props.index]}
+        />
+      </p>
     </button>
   )
 }

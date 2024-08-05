@@ -9,10 +9,12 @@ import HTMLContent from './HTMLContent';
 import Submenu from './Submenu';
 import { useMediaQuery } from 'react-responsive';
 import LangSelect from './LangSelect';
-import { RouteObj, SubRouteObj } from '../types/types';
+import { RouteObj } from '../types/types';
 import LanguageContext from '../contexts/LanguageContext';
 import { DataContext } from '../contexts/DataContext';
 import { useTranslation } from 'react-i18next';
+import SlideParagraph from './text/SlideParagraph';
+import { AnimationContext } from '../contexts/AnimationContext';
 
 interface Props {
   element: RouteObj,
@@ -26,20 +28,15 @@ function Category({element, index}: Props) {
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
   const { language } = useContext(LanguageContext);
   const { data } = useContext(DataContext);
+  const { navbarInit } = useContext(AnimationContext);
   const { t } = useTranslation();
 
-  const [categories, setCategories] = useState(Array<JSX.Element>);
   const [menuPos, setMenuPos] = useState(false);
   const [submenuStates, setSubmenuStates] = useState(Array<boolean>);
   const [activeHTML, setActiveHTML] = useState('');
   const [activeComp, setActiveComp] = useState<JSX.Element | null>(null);
   
-  const submenuRefs = useRef<Array<HTMLDivElement>>(new Array<HTMLDivElement>);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   (categories && submenuRefs.current) && openSubCategory(index);
-  // }, [categories]);
 
   useEffect(() => {
     setSubmenuStates(Object.values(element).map(() => {
@@ -50,23 +47,6 @@ function Category({element, index}: Props) {
   useEffect(() => {
     setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)
   }, [activeHTML]);
-
-  // function openSubCategory(index: number) {
-  //   setSubmenuStates(submenuStates => submenuStates.map((state: boolean, i: number) => {
-  //     if (i === index && submenuRefs.current[i]) {
-  //       if (submenuRefs.current[i].classList.contains('Active')) {
-  //         submenuRefs.current[i].classList.remove('Active');
-  //       }
-  //       else {
-  //         submenuRefs.current[i].classList.add('Active');
-  //       }
-  //       return !state;
-  //     }
-  //     else {
-  //       return state;
-  //     }
-  //   }));
-  // }
 
   function onscroll(event: any) {
     console.log('scroll', event);
@@ -110,12 +90,29 @@ function Category({element, index}: Props) {
             <button className='MenuButton' onClick={() => setMenuPos(menuPos => !menuPos)}>
               <FontAwesomeIcon icon={faBars}/>
             </button>
-            <h2>{Object.keys(data[language])[index].replaceAll('_', ' ')}</h2>
+            <h2>
+              <SlideParagraph 
+                triggerAnim={navbarInit >= index} 
+                translatable={''}
+                indices={[index]} 
+              />
+            </h2>
             {isMobile && <div className='LangContainer'>
             <LangSelect />
           </div>}
           </div>
           <div className='TextContainer'>
+            <svg width="100%" height="100%" viewBox='0 0 100 100' preserveAspectRatio='none'>
+            <rect
+              className='TextLoading'
+              id="rect1516"
+              width="1000"
+              height="1000"
+              x="1"
+              y="1"
+              ry="20" 
+            />
+            </svg>
             {activeHTML !== '' && activeComp}
             <div id='TextBG'></div>
           </div>

@@ -58,13 +58,12 @@
   .CategoryHeader {
     height: 100%;
     margin: 0;
-    padding-left: 20px;
     box-sizing: border-box;
-    gap: 5%;
     text-align: left;
     grid-area: 1 / 2 / 1 / 5;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0);
 
@@ -72,6 +71,7 @@
       width: 40px;
       height: 40px;
       padding: 10px;
+      margin: 0px 20px;
       font-size: 1em;
       border-radius: 50%;
       display: flex;
@@ -86,6 +86,18 @@
       box-shadow: 0px 0px 1px white;
       transition: all 0.4s;
     }
+    h2 {
+      position: relative;
+      flex: 1;
+      height: 100%;
+      align-items: flex-start;
+      justify-content: flex-start;
+
+      .SlideParagraph {
+        height: 100%;
+        justify-content: flex-start;
+      }
+    }
   }
 
   .TextContainer {
@@ -97,6 +109,26 @@
     box-shadow: 0px -1px 1px white;
     position: relative;
     z-index: 2;
+
+    .TextLoading {
+      // offset-path: path('M5,5 Q10,5 20,20');
+      fill: none;
+      stroke: #ff3d3d; 
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: none;
+      stroke-opacity: 1;
+      paint-order: stroke fill markers;
+
+      // width: 20px;
+      // height: 10px !important;
+      // border-radius: 10px 5px 5px 10px;
+      // background-color: white;
+      // filter: blur(0px);
+      // animation: loading 3s infinite ease;
+      z-index: 10;
+    }
 
     #TextBG {
       position: absolute;
@@ -176,5 +208,19 @@
       opacity: 0;
       z-index: 0;
     }
+  }
+}
+
+// ANIMATIONS
+
+@keyframes loading {
+  0% {
+    offset-distance: 0%;
+  }
+  50% {
+    offset-distance: 50%;
+  }
+  100% {
+    offset-distance: 100%;
   }
 }

@@ -10,6 +10,7 @@ interface ContextProps {
 interface LanguageContextType {
   language: string;
   setLanguage: React.Dispatch<React.SetStateAction<string>>;
+  previousLanguage: string;
   handleLanguageChange: Function;
   previousPath: string;
   setPreviousPath: React.Dispatch<React.SetStateAction<string>>
@@ -18,6 +19,7 @@ interface LanguageContextType {
 export const LanguageContext = createContext<LanguageContextType>({
   language: '',
   setLanguage: () => {},
+  previousLanguage: '',
   handleLanguageChange: () => {},
   previousPath: '',
   setPreviousPath: () => {},
@@ -25,25 +27,27 @@ export const LanguageContext = createContext<LanguageContextType>({
 
 export function LanguageContextProvider({ children }: ContextProps) {
   const [language, setLanguage] = useState<string>('FI');
+  const [previousLanguage, setPreviousLanguage] = useState<string>('EN');
   const [previousPath, setPreviousPath] = useState<string>('');
-  const [equivalentPath, setEquivalentPath] = useState('');
+
   const { data } = useContext(DataContext);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const lang = localStorage.getItem('language');
-    console.log('LANG', language, lang);
     lang && setLanguage(lang);
   }, []);
 
-  function handleLanguageChange(language: string) {
-    setLanguage(language);
-    localStorage.setItem('language', language);
+  function handleLanguageChange(lang: string) {
+    setPreviousLanguage(language);
+    setLanguage(lang);
+    localStorage.setItem('language', lang);
     
     const routeArr = location.pathname.split('/').filter(step => step !== '');
     routeArr.splice(0, 1);
-    let route = '/' + language;
+    let route = '/' + lang;
     if (routeArr.length > 0 && Object.keys(data).length > 0) {
       let currentObj: any = data[i18next.language.toUpperCase()];
       const indices = [];
@@ -54,22 +58,22 @@ export function LanguageContextProvider({ children }: ContextProps) {
         currentObj = currentObj[step];
       }
 
-      i18next.changeLanguage(language.toLowerCase());
-      currentObj = data[language];
+      i18next.changeLanguage(lang.toLowerCase());
+      currentObj = data[lang];
 
       for (const index of indices) {
         route += '/' + Object.keys(currentObj)[index];
       }
     }
     else {
-      i18next.changeLanguage(language.toLowerCase());
-      route = '/' + language;
+      i18next.changeLanguage(lang.toLowerCase());
+      route = '/' + lang;
     }
     navigate(route);
   }
 
   return (
-    <LanguageContext.Provider value={{language, setLanguage, handleLanguageChange, previousPath, setPreviousPath}}>
+    <LanguageContext.Provider value={{language, setLanguage, previousLanguage, handleLanguageChange, previousPath, setPreviousPath}}>
       {children}
     </LanguageContext.Provider>
   );

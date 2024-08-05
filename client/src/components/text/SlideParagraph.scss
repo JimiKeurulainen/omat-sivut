@@ -1,0 +1,37 @@
+.SlideParagraph {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+
+  * {
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    transition: all 1s;
+    white-space: nowrap;
+  }
+}
+
+.SlideParagraph.Uninitialized {
+  .Previous {
+    transform: translateY(0%);
+    opacity: 1;
+    transition: transform 0s;
+  }
+  .Current {
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0s;
+  }
+}
+.SlideParagraph.Initialized {
+  .Previous {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  .Current {
+    transform: translateY(0%);
+    opacity: 1;
+    transition: all 1s;
+  }
+}

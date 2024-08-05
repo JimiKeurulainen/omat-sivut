@@ -33,11 +33,6 @@ export function DataContextProvider({ children }: ContextProps) {
     initRoutes();
   }, []);
 
-  // useEffect(() => {
-  //   // console.log('LANG', i18n.language, Object.keys(data).length, data[i18n.language.toUpperCase()]);
-  //   (i18n.language && Object.keys(data).length > 0) && setLocalisedData(data[i18n.language.toUpperCase()]);
-  // }, [data, i18n.language]);
-
   async function initRoutes() {
     setLoading(true);
     const response: ApiResponse = await getRoutes();
