@@ -92,9 +92,9 @@ function Category({element, index}: Props) {
             </button>
             <h2>
               <SlideParagraph 
-                triggerAnim={navbarInit >= index} 
-                translatable={''}
-                indices={[index]} 
+                // triggerAnim={navbarInit >= index} 
+                upcomingText=''
+                previousText=''
               />
             </h2>
             {isMobile && <div className='LangContainer'>

@@ -3,6 +3,7 @@
   flex: 1;
   align-items: center;
   justify-content: center;
+  background-color: rgba(0, 0, 0, 0);
 
   * {
     background-color: rgba(0, 0, 0, 0);
@@ -18,7 +19,7 @@
     opacity: 1;
     transition: transform 0s;
   }
-  .Current {
+  .Upcoming {
     transform: translateY(-100%);
     opacity: 0;
     transition: transform 0s;
@@ -29,7 +30,7 @@
     transform: translateY(100%);
     opacity: 0;
   }
-  .Current {
+  .Upcoming {
     transform: translateY(0%);
     opacity: 1;
     transition: all 1s;

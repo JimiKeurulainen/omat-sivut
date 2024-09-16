@@ -10,12 +10,14 @@ interface DataContextType {
   setAppRef: React.Dispatch<React.SetStateAction<any>>,
   navbarInit: number,
   activeCategory: number,
+  setActiveCategory: React.Dispatch<React.SetStateAction<number>>,
 }
 
 export const AnimationContext = createContext<DataContextType>({
   setAppRef: () => {},
   navbarInit: -1,
   activeCategory: -1,
+  setActiveCategory: () => {},
 });
 
 export function AnimationContextProvider({ children }: ContextProps) {
@@ -47,12 +49,12 @@ export function AnimationContextProvider({ children }: ContextProps) {
 
   // Iterate through category animations recursively
   useEffect(() => {
-    if (navbarInit > -1 && navbarInit < Object.keys(data[language]).length) {
+    if (navbarInit > -1 && navbarInit < Object.keys(data[language]!).length) {
       setTimeout(() => {
         setNavbarInit(navbarInit + 1);
       }, animDelay);
     }
-    else if (navbarInit > -1 && navbarInit === Object.keys(data[language]).length) {
+    else if (navbarInit > -1 && navbarInit === Object.keys(data[language]!).length) {
       const route = sessionStorage.getItem('route');
 
       if (route) {
@@ -65,7 +67,7 @@ export function AnimationContextProvider({ children }: ContextProps) {
   }, [navbarInit]);
 
   return (
-    <AnimationContext.Provider value={{ setAppRef, navbarInit, activeCategory }}>
+    <AnimationContext.Provider value={{ setAppRef, navbarInit, activeCategory, setActiveCategory }}>
       {children}
     </AnimationContext.Provider>
   );

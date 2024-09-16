@@ -68,17 +68,17 @@ code {
 
 // MOBILE VIEW
 @media only screen and (max-width: 600px) {
-  .Navbar {
-    font-size: 14px;
-  }
-  .Navbar-enter-done {
-    height: 10%;
-    top: var(--offset);
+  // .Navbar {
+  //   font-size: 14px;
+  // }
+  // .Navbar-enter-done {
+  //   height: 10%;
+  //   top: var(--offset);
 
-    .Active {
-      p {
-        opacity: 0;
-      }
-    }
-  }
+  //   .Active {
+  //     p {
+  //       opacity: 0;
+  //     }
+  //   }
+  // }
 }
