@@ -87,6 +87,7 @@ function NavbarButton(props: NavbarButtonProps) {
       <p>
         <SlideParagraph 
           // triggerAnim={trigger}
+          key={previousText}
           previousText={previousText}
           upcomingText={upcomingText}
         />

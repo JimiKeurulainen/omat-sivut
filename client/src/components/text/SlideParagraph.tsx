@@ -14,39 +14,14 @@ interface SlideParagraphProps {
 
 function SlideParagraph(props: SlideParagraphProps) {
   const [trigger, setTrigger] = useState<boolean>(false);
-  const [counter, setCounter] = useState<number>(0);
-
-  const { language, previousLanguage } = useContext(LanguageContext);
-  const { data } = useContext(DataContext);
-  const { activeCategory } = useContext(AnimationContext);
-
-  // useEffect(() => {
-  //   // setTrigger(true);
-  //   switch (props.indices?.length) {
-  //     case 1:
-  //       setCurrentTitle(Object.keys(data[language])[props.indices[0]]);
-  //       setPreviousTitle(Object.keys(data[previousLanguage])[props.indices[0]]);
-  //     case 2:
-  //       setCurrentTitle(Object.keys(data[language])[props.indices[0]]);
-  //       setPreviousTitle(Object.keys(data[previousLanguage])[props.indices[0]]);
-  //     case 3:
-  //       setCurrentTitle(Object.keys(data[language])[props.indices[0]]);
-  //       setPreviousTitle(Object.keys(data[previousLanguage])[props.indices[0]]);
-  //   }
-  // }, [language]);
-
   useEffect(() => {
-    setCounter(counter + 1);
-  }, [props.previousText]);
-
-  useEffect(() => {
-    console.log('TRIGGER',  trigger);
+    console.log('RE RENDER');
     setTrigger(true);
-
-    setTimeout(() => {
-      setTrigger(false);
-    }, 1000);
-  }, [counter]);
+    // // document.getElementById('Previous')?.classList.add('Previous');
+    // document.getElementById('Previous')?.classList.remove('Upcoming');
+    // // document.getElementById('Upcoming')?.classList.add('Upcoming');
+    // document.getElementById('Upcoming')?.classList.remove('Previous');
+  }, []);
  
   return (
     <span className={`

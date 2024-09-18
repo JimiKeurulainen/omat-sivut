@@ -13,24 +13,52 @@
   }
 }
 
-.SlideParagraph.Uninitialized {
+// .SlideParagraph.Uninitialized {
   .Previous {
+    animation: previous 1s;
     transform: translateY(0%);
     opacity: 1;
-    transition: transform 0s;
+    transition: transform 1s;
   }
   .Upcoming {
-    transform: translateY(-100%);
+    animation: upcoming 1s;
+    transform: translateY(0%);
     opacity: 0;
     transition: transform 0s;
   }
-}
-.SlideParagraph.Initialized {
-  .Previous {
+// }
+// .SlideParagraph.Initialized {
+//   .Previous {
+//     transform: translateY(100%);
+//     opacity: 0;
+//     transition: all 1s;
+//   }
+//   .Upcoming {
+//     transform: translateY(0%);
+//     opacity: 1;
+//     transition: all 1s;
+//   }
+// }
+
+@keyframes previous {
+  from {
+    transform: translateY(0%);
+    opacity: 1;
+    transition: all 1s;
+  }
+  to {
     transform: translateY(100%);
     opacity: 0;
+    transition: all 1s;
   }
-  .Upcoming {
+}
+@keyframes upcoming {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 1s;
+  }
+  to {
     transform: translateY(0%);
     opacity: 1;
     transition: all 1s;
