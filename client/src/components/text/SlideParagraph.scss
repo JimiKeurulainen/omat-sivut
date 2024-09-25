@@ -13,32 +13,18 @@
   }
 }
 
-// .SlideParagraph.Uninitialized {
-  .Previous {
-    animation: previous 1s;
-    transform: translateY(0%);
-    opacity: 1;
-    transition: transform 1s;
-  }
-  .Upcoming {
-    animation: upcoming 1s;
-    transform: translateY(0%);
-    opacity: 0;
-    transition: transform 0s;
-  }
-// }
-// .SlideParagraph.Initialized {
-//   .Previous {
-//     transform: translateY(100%);
-//     opacity: 0;
-//     transition: all 1s;
-//   }
-//   .Upcoming {
-//     transform: translateY(0%);
-//     opacity: 1;
-//     transition: all 1s;
-//   }
-// }
+.Previous {
+  animation: previous 1s;
+  transform: translateY(0%);
+  opacity: 0;
+  transition: transform 1s;
+}
+.Upcoming {
+  animation: upcoming 1s;
+  transform: translateY(0%);
+  opacity: 1;
+  transition: transform 0s;
+}
 
 @keyframes previous {
   from {

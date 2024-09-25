@@ -45,20 +45,31 @@ function NavbarButton(props: NavbarButtonProps) {
     }
     else if (upcomingText === t('toFrontPage')) {
       setActive(false);
-      setUpcomingText(Object.keys(data[language])[props.index]);
       setPreviousText(t('toFrontPage'));
+      setUpcomingText(Object.keys(data[language])[props.index]);
     }
   }, [activeCategory]);
 
   useEffect(() => {
-    console.log('NAVBAR', navbarInit)
+    if (props.index === activeCategory && !vertical) {
+      setActive(false);
+      setUpcomingText(Object.keys(data[language])[props.index]);
+      setPreviousText(t('toFrontPage'));
+    }
+    else if (props.index === activeCategory) {
+      setActive(false);
+      setPreviousText(t('toFrontPage'));
+      setUpcomingText(Object.keys(data[language])[props.index]);
+    }
+  }, [vertical]);
+
+  useEffect(() => {
     if (navbarInit === props.index) {
       if (active) {
         setPreviousText(t('toFrontPage', {lng: previousLanguage}));
         setUpcomingText(t('toFrontPage'));
       }
       else {
-        console.log('AWDAWD')
         setPreviousText(Object.keys(data[previousLanguage])[props.index]);
         setUpcomingText(Object.keys(data[language])[props.index]);
       }
