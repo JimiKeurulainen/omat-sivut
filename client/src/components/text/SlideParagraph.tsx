@@ -13,20 +13,19 @@ interface SlideParagraphProps {
 }
 
 function SlideParagraph(props: SlideParagraphProps) {
-  const [trigger, setTrigger] = useState<boolean>(false);
-  useEffect(() => {
-    console.log('RE RENDER');
-    setTrigger(true);
-    // // document.getElementById('Previous')?.classList.add('Previous');
-    // document.getElementById('Previous')?.classList.remove('Upcoming');
-    // // document.getElementById('Upcoming')?.classList.add('Upcoming');
-    // document.getElementById('Upcoming')?.classList.remove('Previous');
-  }, []);
+  // const [trigger, setTrigger] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   setTrigger(true);
+  //   // // document.getElementById('Previous')?.classList.add('Previous');
+  //   // document.getElementById('Previous')?.classList.remove('Upcoming');
+  //   // // document.getElementById('Upcoming')?.classList.add('Upcoming');
+  //   // document.getElementById('Upcoming')?.classList.remove('Previous');
+  // }, []);
  
   return (
     <span className={`
       SlideParagraph
-      ${trigger ? 'Initialized' : 'Unitialized'}
     `}>
       <span className='Previous'>{props.previousText.replaceAll('_', ' ')}</span>
       <span className='Upcoming'>{props.upcomingText.replaceAll('_', ' ')}</span>

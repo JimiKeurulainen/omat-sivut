@@ -29,6 +29,7 @@ function NavbarButton(props: NavbarButtonProps) {
   const { t } = useTranslation();
 
   function onPress() {
+    console.log('SET ACTIVE', props.index);
     props.function();
     setActiveCategory(props.index);
   }
@@ -39,6 +40,8 @@ function NavbarButton(props: NavbarButtonProps) {
 
   useEffect(() => {
     if (props.index === activeCategory) {
+      console.log('ACTIVE', activeCategory);
+
       setActive(true);
       setPreviousText(Object.keys(data[language])[props.index]);
       setUpcomingText(t('toFrontPage'));
