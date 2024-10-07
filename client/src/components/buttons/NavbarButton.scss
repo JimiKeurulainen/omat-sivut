@@ -24,6 +24,7 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0);
+    transition: transform 0.2s;
 
     .SlideParagraph {
       transition: transform 0.2s;
@@ -43,18 +44,13 @@
   }
   .Caret {
     position: absolute;
+    top: -40%;
+    transition: all 0.2s;
     background-color: rgba(0, 0, 0, 0);
   }
 }
 .Nappi:hover {
   cursor: pointer;
-
-  // div {
-  //   opacity: 1;
-  //   height: 1000px;
-  //   // transform: translateY(100%);
-  //   transition: opacity 0.2s;
-  // }
 }
 
 .Nappi.Up:hover {
@@ -82,6 +78,10 @@
     opacity: 1;
   }
 }
+.Nappi.Up.Active {
+  animation: slide 1s;
+
+}
 .Nappi.Down.Active {
   div {
     opacity: 1;
@@ -91,7 +91,6 @@
 .Uninitialized.Active {
   div {
     opacity: 1;
-    transition: all 0.6s;
   }
 }
 .Initialized.Active {
@@ -102,11 +101,22 @@
 
 .Active:hover {
   .Caret {
+    top: 0%;
+    transition: all 0.2s;
     polyline {
       opacity: 1;
     }
   }
   .ToFront {
     transform: translateY(1vh);
+  }
+}
+
+@keyframes slide {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(180deg);
   }
 }

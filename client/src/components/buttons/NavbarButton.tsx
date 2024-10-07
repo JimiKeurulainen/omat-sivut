@@ -7,13 +7,12 @@ import { AnimationContext } from '../../contexts/AnimationContext';
 import { DataContext } from '../../contexts/DataContext';
 import LanguageContext from '../../contexts/LanguageContext';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 
 interface NavbarButtonProps {
   index: number;
-  function: (attr?: string) => void;
-  // initialized: boolean;
-  // active: boolean;
+  // function: (attr?: string) => void;
 }
 
 function NavbarButton(props: NavbarButtonProps) {
@@ -22,16 +21,33 @@ function NavbarButton(props: NavbarButtonProps) {
   const [previousText, setPreviousText] = useState<string>("");
   const [upcomingText, setUpcomingText] = useState<string>("");
 
+  const navigateURL = useNavigate();
   const { vertical } = useContext(PositionContext);
   const { activeCategory, setActiveCategory, navbarInit } = useContext(AnimationContext);
   const { data } = useContext(DataContext);
   const { language, previousLanguage } = useContext(LanguageContext);
   const { t } = useTranslation();
 
+  function handleNavigation(category: string) {
+    if (props.index === activeCategory) {
+      navigateURL(language);
+      // setActiveButton(-1);
+    }
+    else {
+      navigateURL(language + '/' + category);
+      // setActiveButton(Object.keys(data[language]).indexOf(category));
+    }
+  }
+
   function onPress() {
     console.log('SET ACTIVE', props.index);
-    props.function();
     setActiveCategory(props.index);
+    if (props.index === activeCategory) {
+      navigateURL(language);
+    }
+    else {
+      navigateURL(language + '/' + Object.keys(data[language])[props.index]);
+    }
   }
 
   useEffect(() => {
@@ -40,8 +56,6 @@ function NavbarButton(props: NavbarButtonProps) {
 
   useEffect(() => {
     if (props.index === activeCategory) {
-      console.log('ACTIVE', activeCategory);
-
       setActive(true);
       setPreviousText(Object.keys(data[language])[props.index]);
       setUpcomingText(t('toFrontPage'));
@@ -60,15 +74,16 @@ function NavbarButton(props: NavbarButtonProps) {
       setPreviousText(t('toFrontPage'));
     }
     else if (props.index === activeCategory) {
-      setActive(false);
-      setPreviousText(t('toFrontPage'));
-      setUpcomingText(Object.keys(data[language])[props.index]);
+      setActive(true);
+      setUpcomingText(t('toFrontPage'));
+      setPreviousText(Object.keys(data[language])[props.index]);
     }
   }, [vertical]);
 
   useEffect(() => {
     if (navbarInit === props.index) {
       if (active) {
+        console.log('FRONT')
         setPreviousText(t('toFrontPage', {lng: previousLanguage}));
         setUpcomingText(t('toFrontPage'));
       }
@@ -78,12 +93,6 @@ function NavbarButton(props: NavbarButtonProps) {
       }
     }
   }, [navbarInit]);
-
-  // useEffect(() => {
-  //   if (navbarInit >= 0 && Object.keys(data).length > 0) {
-  //     navbarInit >= props.index && setInitialized(true);
-  //   }
-  // }, [navbarInit]);
 
   return (
     <button
@@ -100,7 +109,6 @@ function NavbarButton(props: NavbarButtonProps) {
       <CustomCaret />
       <p>
         <SlideParagraph 
-          // triggerAnim={trigger}
           key={previousText}
           previousText={previousText}
           upcomingText={upcomingText}

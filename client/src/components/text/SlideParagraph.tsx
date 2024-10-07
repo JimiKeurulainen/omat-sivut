@@ -7,22 +7,11 @@ import { AnimationContext } from '../../contexts/AnimationContext';
 
 
 interface SlideParagraphProps {
-  // triggerAnim: boolean;
   previousText: string;
   upcomingText: string;
 }
 
 function SlideParagraph(props: SlideParagraphProps) {
-  // const [trigger, setTrigger] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   setTrigger(true);
-  //   // // document.getElementById('Previous')?.classList.add('Previous');
-  //   // document.getElementById('Previous')?.classList.remove('Upcoming');
-  //   // // document.getElementById('Upcoming')?.classList.add('Upcoming');
-  //   // document.getElementById('Upcoming')?.classList.remove('Previous');
-  // }, []);
- 
   return (
     <span className={`
       SlideParagraph

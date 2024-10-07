@@ -1,5 +1,5 @@
 import './Navbar.scss';
-import { useEffect, useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { DataContext } from '../../contexts/DataContext';
@@ -15,22 +15,22 @@ function Navbar() {
   const { data } = useContext(DataContext);
   const { language } = useContext(LanguageContext);
   const { vertical } = useContext(PositionContext);
-  const { navbarInit, activeCategory } = useContext(AnimationContext);
+  // const { activeCategory } = useContext(AnimationContext);
 
   useEffect(() => {
-    setActiveButton(activeCategory);
-  }, [activeCategory]);
+    console.log(data);
+  }, []);
 
-  function handleNavigation(category: string) {
-    if (activeButton === Object.keys(data[language]).indexOf(category)) {
-      navigateURL(language);
-      setActiveButton(-1);
-    }
-    else {
-      navigateURL(language + '/' + category);
-      setActiveButton(Object.keys(data[language]).indexOf(category));
-    }
-  }
+  // function handleNavigation(category: string) {
+  //   if (activeButton === Object.keys(data[language]).indexOf(category)) {
+  //     navigateURL(language);
+  //     setActiveButton(-1);
+  //   }
+  //   else {
+  //     navigateURL(language + '/' + category);
+  //     setActiveButton(Object.keys(data[language]).indexOf(category));
+  //   }
+  // }
 
   return (
     <div 
@@ -39,12 +39,12 @@ function Navbar() {
         ${vertical && 'Down'}
       `}
     >
-      {data[language] && Object.keys(data[language]).map((category: string, index: number) => {
+      {data.FI && Object.keys(data.FI).map((category: string, index: number) => {
         return (
           <NavbarButton
             key={'category' + category}
             index={index}
-            function={() => handleNavigation(category)}
+            // function={() => handleNavigation(category)}
           />
         )
       })}
