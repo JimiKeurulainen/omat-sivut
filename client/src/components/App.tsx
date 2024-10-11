@@ -16,6 +16,7 @@ import Navbar from './layout/Navbar';
 import i18n from '../translations/i18n';
 import { RouteObj } from '../types/types';
 import { AnimationContext } from '../contexts/AnimationContext';
+import { PositionContext } from '../contexts/PositionContext';
 
 
 interface CategoryObj {
@@ -26,15 +27,34 @@ interface SubCategoryObj {
 }
 
 function App() {
-  const { data } = useContext(DataContext);
-  const { language } = useContext(LanguageContext);
-  const { setAppRef } = useContext(AnimationContext);
-
   const [categories, setCategories] = useState<Array<RouteObj>>([]);
   const [loading, setLoading] = useState(false);
 
+  const { data } = useContext(DataContext);
+  const { language } = useContext(LanguageContext);
+  const { setAppRef, activeCategory, setActiveCategory } = useContext(AnimationContext);
+  const { vertical } = useContext(PositionContext);
+
+  const navigateURL = useNavigate();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
   const appRef = useRef<any>(null);
+
+  useEffect(() => {
+    window.addEventListener('wheel', (e) => {
+      console.log('AAAa', e.deltaY, vertical, activeCategory);
+
+      if (!vertical && e.deltaY > 0) {
+        const index: number = activeCategory > 0 ? activeCategory : 0;
+
+        navigateURL(language + '/' + Object.keys(data[language])[index]);
+        // setActiveCategory(index);
+      }
+      else if (e.deltaY < 0) {
+        navigateURL(language);
+        // setActiveCategory(-1);
+      }
+    })
+  }, []);
 
   useEffect(() => {
     if (Object.keys(data).length > 0 && language) {

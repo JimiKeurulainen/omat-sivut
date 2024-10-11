@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { DataContext } from './DataContext';
 import LanguageContext from './LanguageContext';
+import { PositionContext } from './PositionContext';
+import { useNavigate } from 'react-router-dom';
 
 interface ContextProps {
   children: React.ReactNode;
@@ -26,7 +28,7 @@ export function AnimationContextProvider({ children }: ContextProps) {
   const [appRef, setAppRef] = useState<any>();
   const [navbarInit, setNavbarInit] = useState<number>(-1);
   const [activeCategory, setActiveCategory] = useState<number>(-1);
-
+  
   const { data } = useContext(DataContext);
   const { language } = useContext(LanguageContext);
 

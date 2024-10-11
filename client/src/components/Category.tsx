@@ -26,7 +26,7 @@ export const useStateContext = () => useContext(StateContext);
 
 function Category({element, index}: Props) {
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
-  const { language } = useContext(LanguageContext);
+  const { language, previousLanguage } = useContext(LanguageContext);
   const { data } = useContext(DataContext);
   const { navbarInit } = useContext(AnimationContext);
   const { t } = useTranslation();
@@ -92,9 +92,9 @@ function Category({element, index}: Props) {
             </button>
             <h2>
               <SlideParagraph 
-                // triggerAnim={navbarInit >= index} 
-                upcomingText=''
-                previousText=''
+                key={Object.keys(data[previousLanguage])[index]}
+                upcomingText={Object.keys(data[language])[index]}
+                previousText={Object.keys(data[previousLanguage])[index]}
               />
             </h2>
             {isMobile && <div className='LangContainer'>

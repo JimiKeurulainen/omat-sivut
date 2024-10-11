@@ -1,6 +1,9 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Events, scroller } from 'react-scroll';
+import LanguageContext from './LanguageContext';
+import { DataContext } from './DataContext';
+import { AnimationContext } from './AnimationContext';
 
 interface ContextProps {
   children: React.ReactNode;
@@ -25,6 +28,7 @@ export function PositionContextProvider({ children }: ContextProps) {
   const [horizontal, setHorizontal] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  
   const location = useLocation();
 
   useEffect(() => {
@@ -39,6 +43,7 @@ export function PositionContextProvider({ children }: ContextProps) {
   async function handleScroll() {
     const locationArr = location.pathname.split('/');
 
+    console.log('LOC ARR', locationArr);
     if (locationArr.length > 2) {
       setVertical(true);
       await scrollVertically('Lower');

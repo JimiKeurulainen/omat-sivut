@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 
 interface NavbarButtonProps {
   index: number;
-  // function: (attr?: string) => void;
 }
 
 function NavbarButton(props: NavbarButtonProps) {
@@ -28,21 +27,9 @@ function NavbarButton(props: NavbarButtonProps) {
   const { language, previousLanguage } = useContext(LanguageContext);
   const { t } = useTranslation();
 
-  function handleNavigation(category: string) {
-    if (props.index === activeCategory) {
-      navigateURL(language);
-      // setActiveButton(-1);
-    }
-    else {
-      navigateURL(language + '/' + category);
-      // setActiveButton(Object.keys(data[language]).indexOf(category));
-    }
-  }
-
   function onPress() {
-    console.log('SET ACTIVE', props.index);
     setActiveCategory(props.index);
-    if (props.index === activeCategory) {
+    if (props.index === activeCategory && vertical) {
       navigateURL(language);
     }
     else {
@@ -83,7 +70,6 @@ function NavbarButton(props: NavbarButtonProps) {
   useEffect(() => {
     if (navbarInit === props.index) {
       if (active) {
-        console.log('FRONT')
         setPreviousText(t('toFrontPage', {lng: previousLanguage}));
         setUpcomingText(t('toFrontPage'));
       }
