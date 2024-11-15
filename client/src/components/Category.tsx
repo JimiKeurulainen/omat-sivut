@@ -1,7 +1,7 @@
 // import './App.css';
 import './Category.scss';
 import { Element } from "react-scroll";
-import { useEffect, useState, useRef, createContext, useContext } from 'react';
+import { useEffect, useState, useRef, createContext, useContext, act } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
@@ -15,6 +15,7 @@ import { DataContext } from '../contexts/DataContext';
 import { useTranslation } from 'react-i18next';
 import SlideParagraph from './text/SlideParagraph';
 import { AnimationContext } from '../contexts/AnimationContext';
+import { getHtml } from '../api/html';
 
 interface Props {
   element: RouteObj,
@@ -34,7 +35,6 @@ function Category({element, index}: Props) {
   const [menuPos, setMenuPos] = useState(false);
   const [submenuStates, setSubmenuStates] = useState(Array<boolean>);
   const [activeHTML, setActiveHTML] = useState('');
-  const [activeComp, setActiveComp] = useState<JSX.Element | null>(null);
   
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -44,9 +44,9 @@ function Category({element, index}: Props) {
     }));
   }, [element]);
 
-  useEffect(() => {
-    setActiveComp(<HTMLContent ID={activeHTML}></HTMLContent>)
-  }, [activeHTML]);
+  // useEffect(() => {
+  //   activeHTML && getHtml(activeHTML);
+  // }, [activeHTML]);
 
   function onscroll(event: any) {
     console.log('scroll', event);
@@ -76,10 +76,10 @@ function Category({element, index}: Props) {
                     baseRoute={Object.keys(data[language])[index]} 
                     title={Object.keys(element)[index1]}
                     data={subcategory}
+                    setActiveHtml={setActiveHTML}
                     // openMenu={() => openSubCategory(index1)}
                     index={index1} 
                     setMenu={setMenuPos} 
-                    setActiveHTML={setActiveHTML}
                   />
                 );
               })}
@@ -102,18 +102,18 @@ function Category({element, index}: Props) {
           </div>}
           </div>
           <div className='TextContainer'>
-            <svg width="100%" height="100%" viewBox='0 0 100 100' preserveAspectRatio='none'>
-            <rect
-              className='TextLoading'
-              id="rect1516"
-              width="1000"
-              height="1000"
-              x="1"
-              y="1"
-              ry="20" 
-            />
+            <svg className='TextLoading' width="100%" height="100%" viewBox='0 0 100 100' preserveAspectRatio='none'>
+              <rect
+                className='TextLoading'
+                id="rect1516"
+                width="1000"
+                height="1000"
+                x="1"
+                y="1"
+                ry="20" 
+              />
             </svg>
-            {activeHTML !== '' && activeComp}
+            {activeHTML !== '' && <HTMLContent ID={activeHTML}></HTMLContent>}
             <div id='TextBG'></div>
           </div>
           {!isMobile && <div className='LangContainer'>

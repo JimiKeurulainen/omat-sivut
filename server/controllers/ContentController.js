@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import * as deepl from 'deepl-node';
-
+import { files } from "../index.js";
 
 export const getRoutes = async (req, res) => {
     const url = path.join(process.env.CONTENT_PATH);
@@ -29,26 +29,31 @@ export const getRoutes = async (req, res) => {
             const parent = tempArr[tempArr.length - 1];
             const grandparent = tempArr[tempArr.length - 2];
             const greatgrandparent = tempArr[tempArr.length - 3];
-            console.log('LEVEL', level, tempArr, parent);
-
 
             if (level === 1 && dirent.name !== 'models') {
                 routes[name] = {}
             }
             else if (level === 2 && tempArr.includes(parent)) {
                 routes[parent][name] = {};
-                console.log('2', parent, name);
             }
             else if (level === 3 && tempArr.includes(parent)) {
-                console.log('3', parent, name, grandparent);
                 routes[grandparent][parent][name] = [];
             }
             else if (level === 4 && tempArr.includes(parent) && dirent.isDirectory()) {
-                console.log('4', parent, name);
                 routes[greatgrandparent][grandparent][parent].push(name);
             }
+            else if (dirent.isFile()) {
+                let fileName = dirent.name.split('_');
+
+                if (fileName.length > 1 && parseInt(fileName[0])) {
+                    fileName = fileName.slice(1).join('_');
+                }
+                else {
+                    fileName = dirent.name;
+                }
+                files[fileName ?? dirent.name] = (dirent.parentPath);
+            }
         }
-        console.log('ROUTES', routes);
 
         res.send(routes);
     } catch (error) {
@@ -58,58 +63,22 @@ export const getRoutes = async (req, res) => {
 }
 
 export const getFile = async (req, res) => {
-    const url = path.join('/var/www/jimikeurulainen/content/', req.params.language, req.params.category, req.params.subcategory, req.params.file);
+    const url = files[req.params.file];
 
     try {
         const dir = fs.readdirSync(url);
+        console.log('PATH', url, dir);
+
         const images = [];
         var html = ''
 
-        if (req.params.language === 'EN' && dir.length === 0) {
-            // If there is no already translated file on the server
-            const dirFI = fs.readdirSync('/var/www/jimikeurulainen/content/FI/');
-            const auth = fs.readFileSync('/var/www/jimikeurulainen/auth/auth.json', {encoding: 'utf8'});
-            const translator = new deepl.Translator(JSON.parse(auth).deepL);
-            var filePath = '';
-
-            dirFI.forEach(category => {
-                if (category.split('_')[0] === req.params.category.split('_')[0]) {
-                    const subcategories = fs.readdirSync(path.join('/var/www/jimikeurulainen/content/FI/', category));
-                    subcategories.forEach(subcategory => {
-                        if (subcategory.split('_')[0] === req.params.subcategory.split('_')[0]) {
-                            const files = fs.readdirSync(path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory));
-                            files.forEach(file => {
-                                if (file.split('_')[0] === req.params.file.split('_')[0]) {
-                                    filePath = path.join('/var/www/jimikeurulainen/content/FI/', category, subcategory, file, `${file}.html`);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-            filePath !== '' && translator.translateDocument(
-                filePath,
-                path.join(url, `${req.params.file}.html`),
-                'fi',
-                'en-GB'
-            ).then(res => {
-                console.log('res', res, res.text)
-            })
-        }
-        // else if () {
-        //     // If a translated file already exists
-        //     html = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
-        // }
-        else {
-            dir.forEach(file => {
-                const nameArr = file.split(".");
-                if (nameArr[nameArr.length - 1] !== 'html') {
-                    images.push(fs.readFileSync(path.join(url, file), {encoding: 'base64'}));
-                } 
-            });
-            html = fs.readFileSync(path.join(url, `${req.params.file}.html`), {encoding: 'utf8'});
-        }
+        dir.forEach(file => {
+            const nameArr = file.split(".");
+            if (nameArr[nameArr.length - 1] !== 'html') {
+                images.push(fs.readFileSync(path.join(url, file), {encoding: 'base64'}));
+            } 
+        });
+        html = fs.readFileSync(path.join(url, dir[0]), {encoding: 'utf8'});
 
         res.setHeader('Content-Type', 'text/html');
         res.json({

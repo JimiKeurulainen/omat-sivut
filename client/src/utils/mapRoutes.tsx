@@ -4,6 +4,7 @@ import { DataObject, LocaleObj, RouteObj, SubRouteObj } from "../types/types";
 
 
 export function mapRoutes(data: DataObject) {
+  console.log('ROUTES', data);
   const routes = Object.values(data).map((locale: LocaleObj, index1: number) => {
     // Map locales
     return (<Route path={Object.keys(data)[index1]} element={<App />} key={'locale' + Object.keys(data)[index1]}>

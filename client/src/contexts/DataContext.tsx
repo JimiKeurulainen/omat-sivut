@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ApiResponse, DataObject, LocaleObj, RouteObj } from '../types/types';
+import React, { createContext, useEffect, useState } from 'react';
+import { ApiResponse, DataObject } from '../types/types';
 import { getRoutes } from '../api/routes';
 import { mapRoutes } from '../utils/mapRoutes';
-import LanguageContext from './LanguageContext';
-import i18n from '../translations/i18n';
 
 interface ContextProps {
   children: React.ReactNode;

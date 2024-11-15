@@ -7,11 +7,11 @@ function Status() {
   const statusURL = process.env.REACT_APP_STATUS ? process.env.REACT_APP_STATUS : 'no env variable';
 
   // Get status page information on mount
-  useEffect(() => {
-    axios.get(statusURL).then(res => {
-      console.log('res', res);
-    })
-  }, []);
+  // useEffect(() => {
+  //   axios.get(statusURL).then(res => {
+  //     console.log('res', res);
+  //   })
+  // }, []);
 
   return (
       <div>

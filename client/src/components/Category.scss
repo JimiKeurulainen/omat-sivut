@@ -120,6 +120,8 @@
       stroke-dasharray: none;
       stroke-opacity: 1;
       paint-order: stroke fill markers;
+      position: absolute;
+      z-index: 0;
 
       // width: 20px;
       // height: 10px !important;
@@ -127,7 +129,6 @@
       // background-color: white;
       // filter: blur(0px);
       // animation: loading 3s infinite ease;
-      z-index: 10;
     }
 
     #TextBG {

@@ -9,6 +9,8 @@ import busboy from "connect-busboy";
 
 const app = express();
 
+export let files = {};
+
 app.use(function(req, res, next) {
     // res.header("Access-Control-Allow-Origin", "jimikeurulainen.site");
     // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

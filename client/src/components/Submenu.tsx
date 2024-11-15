@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import LanguageContext from '../contexts/LanguageContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { DataContext } from '../contexts/DataContext';
 
 interface Props {
   baseRoute: string,
@@ -13,13 +14,14 @@ interface Props {
   data: Array<string>,
   index: number,
   setMenu: Function,
-  setActiveHTML: Function
+  setActiveHtml: Function,
 }
 
 function Submenu(props: Props) {
   const navigateURL = useNavigate();
   const isMobile = useMediaQuery({query: '(max-width: 600px)'});
   const { language } = useContext(LanguageContext);
+  const { routes } = useContext(DataContext);
   const location = useLocation();
 
   const [submenuHeight, setSubmenuHeight] = useState<number>(0);
@@ -39,8 +41,11 @@ function Submenu(props: Props) {
   }, [props.data]);
 
   function navigate(project: string) {
-    props.setActiveHTML(`${props.baseRoute}/${Object.keys(props.data)[0]}/${project}`);
-    navigateURL(`${language}/${props.baseRoute.slice(2)}/${Object.keys(props.data)[0].slice(2)}/${project.slice(2)}`);
+    console.log('DATA', `${language}/${props.baseRoute}/${project}`, props.data);
+    props.setActiveHtml(project);
+    console.log('ROUTES', routes)
+
+    // navigateURL(`${language}/${props.baseRoute}/${project}`);
     isMobile && props.setMenu(false);
   }
 
@@ -66,9 +71,9 @@ function Submenu(props: Props) {
           <button 
             className='SubmenuBtn'
             key={'projectBtn' + project} 
-            onClick={() => navigate(props.title + '/' + project)}
+            onClick={() => navigate(project)}
           >
-            <p className='TextInit'>{project}</p>
+            <p className='TextInit'>{project.replaceAll("_", " ")}</p>
           </button>
         )
       })}

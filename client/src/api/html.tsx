@@ -1,13 +1,13 @@
 import { axiosInstance } from "../axiosInstance";
 import { ApiResponse } from "../types/types";
 
-export async function getRoutes(): Promise<ApiResponse> {
-  const routesURL = process.env.REACT_APP_ROUTES ?? 'no env route';
+export async function getHtml(file: string): Promise<ApiResponse> {
+  const htmlUrl = process.env.REACT_APP_FILES ?? 'no env route';
+  console.log('HTML', htmlUrl + file);
 
   try {
-    const response = await axiosInstance.get(routesURL);
+    const response = await axiosInstance.get(htmlUrl + file + '.html');
 
-    console.log('ROUTES RES', response);
     return {
       error: false,
       message: '',

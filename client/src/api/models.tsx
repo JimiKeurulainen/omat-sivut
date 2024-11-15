@@ -1,7 +1,7 @@
 import { axiosInstance } from "../axiosInstance";
 
 export async function getModel(id: string, setProgress: React.Dispatch<React.SetStateAction<number>>, cancelTokenSource: any) {
-  const modelURL = process.env.REACT_APP_MODELS ? process.env.REACT_APP_MODELS : 'no env route';
+  const modelURL = process.env.REACT_APP_MODELS ?? 'no env route';
 
   try {
     const modelResponse = await axiosInstance.get(modelURL + id, {responseType: 'arraybuffer', onDownloadProgress: (progEvent) => {
@@ -13,6 +13,7 @@ export async function getModel(id: string, setProgress: React.Dispatch<React.Set
     // If component gets unmounted, cancel stream request
     }, cancelToken: cancelTokenSource.token
     });
+    console.log('MODEL RESPONSE', modelResponse);
   }
   catch (e) {
 

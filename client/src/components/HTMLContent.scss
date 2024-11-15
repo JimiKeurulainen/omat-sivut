@@ -23,6 +23,7 @@
  
   * {
     background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
   }
   h2 {
     font-size: 1.6em;
@@ -37,6 +38,11 @@
   img {
     margin: 1em 1em 1em 0em;
   }
+}
+
+.anim1 {
+  opacity: 1;
+  transition: 1s;
 }
 
 ::-webkit-scrollbar {
@@ -59,3 +65,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+// @keyframes anim1 {
+//   from {
+//     opacity: 1
+//   }
+//   to {
+//     opacity: 0
+//   }
+// }
